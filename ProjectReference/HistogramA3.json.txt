@@ -1,0 +1,45 @@
+{
+"histograma" : {
+   "canvas" : {
+      "size" : [700, 400],
+      "xscale" : [0, 2.0],
+      "yscale" : [0, 1.0], 
+      "bgcolor" : [255, 255, 255],
+      "color" : [0, 0, 0]
+   },
+   
+   "formats" : {
+      "margins" : [0.15, 0.20, 0.125, 0.05],
+      "isbarfilled" : false,
+      "barfillcolor" : [0, 0, 255], 
+      "hasbarframe" : true,
+      "barframecolor" : [255, 100, 100],  
+      "hasborder" : true,
+      "bordercolor" : [200, 100, 50],
+      "rulercolor" : [150, 50, 250],
+      "rulermarkcolor" : [0, 0, 255],
+      "hasrightruler" : true,
+      "keycolor" : [100, 50, 200],
+      "hasheader" : true,
+      "headercolor" : [255, 125, 100],
+      "hasfooter" : true,
+      "footercolor" : [50, 100, 255]
+   },
+     
+   "data" : { 
+      "header" : "1952-2017 GDP of P.R.China",
+      "footer" : "Figure 4.3 1952-2017 GDP of P.R.China (in 100M RMB)",
+      "minvalue" : 0.0,
+      "keys" : [ 
+          "2000", "", "", "", "", "2005", "", "", "", "", 
+          "2010", "", "", "", "", "2015", "", "2017"
+      ], 
+                 
+      "values" : [
+          99066.1, 109276.2, 120480.4, 136576.3, 161415.4, 185998.9, 219028.5, 270844.0, 321500.5, 348498.5, 
+          411265.2, 484753.2, 539116.5, 590422.4, 644791.1, 686449.6, 740598.7, 824828.4 
+      ]
+   }
+}        
+}
+

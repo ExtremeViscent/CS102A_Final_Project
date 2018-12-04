@@ -1,0 +1,47 @@
+{
+"histograma" : {
+   "canvas" : {
+      "size" : [1024, 512],
+      "xscale" : [0, 2.0],
+      "yscale" : [0, 1.0], 
+      "bgcolor" : [255, 255, 255],
+      "color" : [0, 0, 0]
+   },
+   
+   "formats" : {
+      "margins" : [0.15, 0.15, 0.1, 0.05],
+      "isbarfilled" : true,
+      "barfillcolor" : [0, 0, 255], 
+      "hasbarframe" : false,
+      "barframecolor" : [255, 0, 0],  
+      "hasborder" : true,
+      "bordercolor" : [0, 255, 0],
+      "rulercolor" : [200, 200, 0],
+      "rulermarkcolor" : [200, 200, 0],
+      "hasrightruler" : true,
+      "keycolor" : [200, 200, 0],
+      "hasheader" : true,
+      "headercolor" : [100, 100, 100],
+      "hasfooter" : true,
+      "footercolor" : [0, 200, 200]
+   },
+     
+   "data" : { 
+      "header" : "1952-2017 GDP of P.R.China",
+      "footer" : "Figure 4.3 1952-2017 GDP of P.R.China (in 100M RMB)",
+      "minvalue" : 0.0,
+      "keys" : [ 
+          "1990", "", "", "", "", "", "", "", "", "", 
+          "2000", "", "", "", "", "", "", "", "", "", 
+          "2010", "", "", "", "", "", "", "2017"
+      ], 
+                 
+      "values" : [
+          18923.3, 22050.3, 27208.2, 35599.2, 48548.2, 60356.6, 70779.6, 78802.9, 83817.6, 89366.5, 
+          99066.1, 109276.2, 120480.4, 136576.3, 161415.4, 185998.9, 219028.5, 270844.0, 321500.5, 348498.5, 
+          411265.2, 484753.2, 539116.5, 590422.4, 644791.1, 686449.6, 740598.7, 824828.4 
+      ]
+   }
+}        
+}
+
