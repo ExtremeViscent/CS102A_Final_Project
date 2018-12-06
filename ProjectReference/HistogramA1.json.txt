@@ -11,9 +11,9 @@
    "formats" : {
       "margins" : [0.15, 0.25, 0.1, 0.05],
       "isbarfilled" : true,
-      "barfillcolor" : [0, 0, 255], 
+      "barfillcolor" : [0, 0, 255],
       "hasbarframe" : true,
-      "barframecolor" : [255, 0, 0],  
+      "barframecolor" : [255, 0, 0],
       "hasborder" : true,
       "bordercolor" : [0, 255, 0],
       "rulercolor" : [200, 200, 0],

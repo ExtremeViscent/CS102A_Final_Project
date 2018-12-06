@@ -13,8 +13,8 @@ class Canvas {
 class Formats {
    double[] margins = { 0.15, 0.15, 0.1, 0.05 };  // NORTH, SOUTH, WEST, EAST
    boolean isBarFilled = true;
-   Color barFillColor = Color.BLACK;
-   boolean hasBarFrame = true;
+   Color barFillColor = new Color(237,108,0);
+   boolean hasBarFrame = false;
    Color barFrameColor = Color.BLACK;
    boolean hasBorder = true;
    Color borderColor = Color.BLACK;
@@ -23,9 +23,9 @@ class Formats {
    boolean hasRightRuler = true;
    Color keyColor = Color.BLACK;
    boolean hasHeader = true;
-   Color headerColor = Color.BLACK;
+   Color headerColor = Color.DARK_GRAY;
    boolean hasFooter = true;
-   Color footerColor = Color.BLACK;
+   Color footerColor = new Color(0,63,67);
 
    public void setBarFillColor(Color barFillColor) {
       this.barFillColor = barFillColor;
@@ -267,8 +267,23 @@ public class HistogramA {
    }
 
    private void plotRightRuler() {
-
-   } //TODO
+      Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
+      StdDraw.setFont( font );
+      StdDraw.setPenColor( f.rulerColor );
+      final double x0 = xValue[MAX] - 0.05, x1 = xValue[MAX] + 0.05;
+      String[] mark = new String[rulerGrade+1];
+      for (int i = 0; i <= rulerGrade; i++) {
+         double y = yValue[MIN] + i * rulerStep;
+         mark[i] = numberForRuler( y );
+         StdDraw.line( x0, y, x1, y );
+      }
+      int len = maxMarkLength( mark );
+      final double xs = xScale[MAX] - 0.25 * (xValue[MIN] - xScale[MIN]);
+      for (int i = 0; i <= rulerGrade; i++) {
+         double y = yValue[MIN] + i * rulerStep;
+         StdDraw.text( xs, y, String.format( "%-" + len + "s", mark[i] ));
+      }
+   }
 
    private void plotHeader() {
       Font font = new Font( "calibri", Font.PLAIN, 20 ); // TO BE Customized

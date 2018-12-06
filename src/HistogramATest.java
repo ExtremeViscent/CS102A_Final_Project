@@ -80,23 +80,22 @@ public class HistogramATest {
       return new Color( c[0], c[1], c[2]);
    }
 
-   private static Formats getFormatsFrom( JsonObject obj) {  // TODO for default values
+   private static Formats getFormatsFrom( JsonObject obj) {
       Formats fmts = new Formats();
-      fmts.margins = toDoubleArray( obj.getJsonArray( "margins"));
-      fmts.isBarFilled = obj.getBoolean( "isbarfilled");
-      fmts.barFillColor = getColorFrom( obj.getJsonArray( "barfillcolor"));
-      fmts.hasBarFrame = obj.getBoolean( "hasbarframe");
-      fmts.barFrameColor = getColorFrom( obj.getJsonArray( "barframecolor"));
-      fmts.hasBorder = obj.getBoolean( "hasborder");
-      fmts.borderColor = getColorFrom( obj.getJsonArray( "bordercolor"));
-      fmts.rulerColor = getColorFrom( obj.getJsonArray( "rulercolor"));
-      fmts.rulerMarkColor = getColorFrom( obj.getJsonArray( "rulermarkcolor"));
-      fmts.hasRightRuler = obj.getBoolean( "isbarfilled");
-      fmts.keyColor = getColorFrom( obj.getJsonArray( "keycolor"));
-      fmts.hasHeader = obj.getBoolean( "hasheader");
-      fmts.headerColor = getColorFrom( obj.getJsonArray( "headercolor"));
-      fmts.hasFooter = obj.getBoolean( "hasfooter");
-      fmts.footerColor = getColorFrom( obj.getJsonArray( "footercolor"));
+      try{fmts.isBarFilled = obj.getBoolean( "isbarfilled");}catch(Exception ignored){}
+      try{fmts.barFillColor = getColorFrom( obj.getJsonArray( "barfillcolor"));}catch(Exception ignored){}
+      try{fmts.hasBarFrame = obj.getBoolean( "hasbarframe");}catch(Exception ignored){}
+      try{fmts.barFrameColor = getColorFrom( obj.getJsonArray( "barframecolor"));}catch(Exception ignored){}
+      try{fmts.hasBorder = obj.getBoolean( "hasborder");}catch(Exception ignored){}
+      try{fmts.borderColor = getColorFrom( obj.getJsonArray( "bordercolor"));}catch(Exception ignored){}
+      try{fmts.rulerColor = getColorFrom( obj.getJsonArray( "rulercolor"));}catch(Exception ignored){}
+      try{fmts.rulerMarkColor = getColorFrom( obj.getJsonArray( "rulermarkcolor"));}catch(Exception ignored){}
+      try{fmts.hasRightRuler = obj.getBoolean( "isbarfilled");}catch(Exception ignored){}
+      try{fmts.keyColor = getColorFrom( obj.getJsonArray( "keycolor"));}catch(Exception ignored){}
+      try{fmts.hasHeader = obj.getBoolean( "hasheader");}catch(Exception ignored){}
+      try{fmts.headerColor = getColorFrom( obj.getJsonArray( "headercolor"));}catch(Exception ignored){}
+      try{fmts.hasFooter = obj.getBoolean( "hasfooter");}catch(Exception ignored){}
+      try{fmts.footerColor = getColorFrom( obj.getJsonArray( "footercolor"));}catch(Exception ignored){}
       return fmts;
    }
 
@@ -104,7 +103,7 @@ public class HistogramATest {
       HistogramData data = new HistogramData();
       data.header = obj.getString( "header", "");
       data.footer = obj.getString( "footer", "");
-      data.minValue = obj.getJsonNumber( "minvalue").doubleValue(); // TODO for default value
+      try{  data.minValue = obj.getJsonNumber( "minvalue").doubleValue(); }catch(Exception ignored){}
       data.keys = toStringArray( obj.getJsonArray( "keys"));
       data.values = toDoubleArray( obj.getJsonArray( "values"));
       return data;
