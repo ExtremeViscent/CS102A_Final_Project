@@ -261,6 +261,7 @@ public class HistogramA {
       double y = .5 * (yValue[MIN] + yValue[MAX]);
       double halfWidth  = .5 * (xValue[MAX] - xValue[MIN]);
       double halfHeight = .5 * (yValue[MAX] - yValue[MIN]);
+      System.out.println(halfHeight+"+"+halfWidth+"x"+x+"y"+y+" "+yScale[MAX]);
       StdDraw.setPenColor( f.borderColor );
       StdDraw.rectangle( x, y, halfWidth, halfHeight);
    }
