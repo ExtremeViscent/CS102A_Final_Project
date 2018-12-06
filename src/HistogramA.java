@@ -1,5 +1,7 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.util.logging.LogManager;
+
 class Canvas {
    int x = 512, y = 512;
    double[] xScale = { 0, 1.0 };  // MIN, MAX
@@ -151,6 +153,7 @@ public class HistogramA {
       plotBars();
       plotRuler();
       plotKeys();
+      plotIcon();
       if (f.hasBorder) plotBorder();
       if (f.hasRightRuler) plotRightRuler();
       if (f.hasHeader) plotHeader();
@@ -175,6 +178,7 @@ public class HistogramA {
       xScale[MIN] = - f.margins[WEST] * xSpacing - 1;
       xScale[MAX] = nBars + f.margins[EAST] * xSpacing;
       StdDraw.setXscale( xScale[MIN], xScale[MAX]);
+      System.out.println(xScale[0]+" "+xScale[1]);
    };
 
    private void setOriginalScale() {
@@ -258,13 +262,15 @@ public class HistogramA {
       double halfHeight = .5 * (yValue[MAX] - yValue[MIN]);
       StdDraw.setPenColor( f.borderColor );
       StdDraw.rectangle( x, y, halfWidth, halfHeight);
-   } 
+   }
 
-   private void plotRightRuler() {} //TODO
-   
+   private void plotRightRuler() {
+
+   } //TODO
+
    private void plotHeader() {
       Font font = new Font( "calibri", Font.PLAIN, 20 ); // TO BE Customized
-      StdDraw.setFont( font ); 
+      StdDraw.setFont( font );
       double x = .5 * (xScale[MIN] + xScale[MAX]);
       double y = .5 * (yValue[MAX] + yScale[MAX]);
       StdDraw.setPenColor( f.headerColor );
@@ -278,7 +284,15 @@ public class HistogramA {
       double y = .5 * (yScale[MIN] + yValue[MIN]);
       StdDraw.setPenColor( f.footerColor );
       StdDraw.text( x, y, d.footer );
-   } 
+   }
+
+   private void plotIcon(){
+      double scaledWidth=(xValue[MAX]-xValue[MIN])/4;
+      double scaledHeight=(yValue[MAX] - yValue[MIN])/5;
+      System.out.println(c.x);
+      System.out.println((yValue[MAX] - yValue[MIN])+" "+(yValue[MAX] - yValue[MIN])*296/62);
+      StdDraw.picture((xScale[MAX])-scaledWidth/2,(yScale[MAX])-scaledHeight/2,"LOGO.png",scaledWidth,scaledHeight);
+   }
    
    private final static int NORTH = 0;
    private final static int SOUTH = 1;
