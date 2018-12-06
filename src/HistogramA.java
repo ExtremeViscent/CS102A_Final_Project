@@ -154,6 +154,7 @@ public class HistogramA {
       plotRuler();
       plotKeys();
       plotIcon();
+      plotShoes();
       if (f.hasBorder) plotBorder();
       if (f.hasRightRuler) plotRightRuler();
       if (f.hasHeader) plotHeader();
@@ -293,7 +294,25 @@ public class HistogramA {
       System.out.println((yValue[MAX] - yValue[MIN])+" "+(yValue[MAX] - yValue[MIN])*296/62);
       StdDraw.picture((xScale[MAX])-scaledWidth/2,(yScale[MAX])-scaledHeight/2,"LOGO.png",scaledWidth,scaledHeight);
    }
-   
+
+   private void plotShoes(){
+      double xlength = xScale[MAX] - xScale[MIN];
+      double ylength = yScale[MAX] - yScale[MIN];
+      double x0 = (xScale[MAX] + xScale[MIN])/2;
+      double y0 = (yScale[MAX] + yScale[MIN])/2;
+      double changdu1 = (xlength)/4;
+      double changdu2 = 3*changdu1;
+      double kuandu = 48000;
+      double a1 = changdu1/2-xlength/2;
+      double a2 = xlength/2-changdu2/2;
+      double b = kuandu/2-ylength/2;
+      StdDraw.setPenColor(43,183,179);
+      StdDraw.filledRectangle(x0+a1, y0+kuandu/2-ylength/2, changdu1/2 , 24000);
+      StdDraw.setPenColor(237,108,0);
+      StdDraw.filledRectangle(x0+a2, y0+kuandu/2-ylength/2, changdu2/2 , 24000);
+   }
+
+
    private final static int NORTH = 0;
    private final static int SOUTH = 1;
    private final static int WEST  = 2;
