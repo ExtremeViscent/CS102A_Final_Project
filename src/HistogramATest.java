@@ -107,10 +107,12 @@ public class HistogramATest {
       if (obj.containsKey("objectCount")){
          data.objectsCount = obj.getInt("objectCount");
          data.data=new SingleObjectData[data.objectsCount];
-         for (SingleObjectData a:data.data) {
-            a=new SingleObjectData();
+         for (int i = 0; i < data.objectsCount; i++) {
+            data.data[i]=new SingleObjectData();
+            data.data[i].name=toStringArray(obj.getJsonArray("name"))[i];
          }
          for (int i=0;i<data.objectsCount;i++) {
+            JsonObject obj_= obj.getJsonObject(data.data[i].name);
             data.data[i].keys = toStringArray( obj.getJsonArray( "keys"));
             data.data[i].values = toDoubleArray( obj.getJsonArray( "values"));
          }
