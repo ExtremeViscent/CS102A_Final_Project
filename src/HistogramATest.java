@@ -113,8 +113,8 @@ public class HistogramATest {
          }
          for (int i=0;i<data.objectsCount;i++) {
             JsonObject obj_= obj.getJsonObject(data.data[i].name);
-            data.data[i].keys = toStringArray( obj.getJsonArray( "keys"));
-            data.data[i].values = toDoubleArray( obj.getJsonArray( "values"));
+            data.data[i].keys = toStringArray( obj_.getJsonArray( "keys"));
+            data.data[i].values = toDoubleArray( obj_.getJsonArray( "values"));
          }
       }
       else {
