@@ -25,7 +25,7 @@ public class HistogramB {
     }
 
     private void setHistogramParameters () {
-        double[] a = d.values;
+        double[] a = d.data[0].values;
         xValue[MIN] = -1;
         xValue[MAX] = a.length;
 
@@ -91,7 +91,7 @@ public class HistogramB {
     }
 
     private void plotBars () {
-        double[] a = d.values;
+        double[] a = d.data[0].values;
         int n = a.length;
         setHistogramScale( n );
         if (f.isBarFilled) {
@@ -151,10 +151,10 @@ public class HistogramB {
         StdDraw.setFont( font );
         StdDraw.setPenColor( f.keyColor );
         final double y = yValue[MIN] - 0.5 * rulerStep;
-        for (int i = 0; i < d.keys.length; i++) {
-            if (d.keys[i].length() >= 1) {
+        for (int i = 0; i < d.data[0].keys.length; i++) {
+            if (d.data[0].keys[i].length() >= 1) {
                 double x = xValue[MIN] + 1 + i;
-                StdDraw.text( x, y, d.keys[i]);
+                StdDraw.text( x, y, d.data[0].keys[i]);
             }
         }
     }

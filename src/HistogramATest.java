@@ -104,8 +104,19 @@ public class HistogramATest {
       data.header = obj.getString( "header", "");
       data.footer = obj.getString( "footer", "");
       try{  data.minValue = obj.getJsonNumber( "minvalue").doubleValue(); }catch(Exception ignored){}
-      data.keys = toStringArray( obj.getJsonArray( "keys"));
-      data.values = toDoubleArray( obj.getJsonArray( "values"));
+      if (obj.containsKey("objectCount")){
+         data.objectsCount = obj.getInt("objectCount");
+         data.data=new SingleObjectData[data.objectsCount];
+         for (int i=0;i<data.objectsCount;i++) {
+            data.data[i].keys = toStringArray( obj.getJsonArray( "keys"));
+            data.data[i].values = toDoubleArray( obj.getJsonArray( "values"));
+         }
+      }
+      else {
+         data.objectsCount=1;
+         data.data=new SingleObjectData[1];
+         data.data[0].keys = toStringArray( obj.getJsonArray( "keys"));
+         data.data[0].values = toDoubleArray( obj.getJsonArray( "values"));}
       return data;
    }
 }

@@ -95,8 +95,14 @@ class HistogramData {
    public void setMinValue(double minValue) {
       this.minValue = minValue;
    }
+   int objectsCount=1;
+   SingleObjectData[] data=new SingleObjectData[0];
+}
+class SingleObjectData{
+   String name="";
    String[] keys = { };
    double[] values = { };
+   public SingleObjectData(){super();}
 }
 
 public class HistogramA {
@@ -122,7 +128,7 @@ public class HistogramA {
    }
 
    private void setHistogramParameters () {
-      double[] a = d.values;
+      double[] a = d.data[0].values;
       xValue[MIN] = -1;
       xValue[MAX] = a.length;
 
@@ -188,7 +194,7 @@ public class HistogramA {
    }
 
    private void plotBars () {
-      double[] a = d.values;
+      double[] a = d.data[0].values;
       int n = a.length;
       setHistogramScale( n );
       if (f.isBarFilled) {
@@ -248,10 +254,10 @@ public class HistogramA {
       StdDraw.setFont( font ); 
       StdDraw.setPenColor( f.keyColor );
       final double y = yValue[MIN] - 0.5 * rulerStep;
-      for (int i = 0; i < d.keys.length; i++) {
-         if (d.keys[i].length() >= 1) {
+      for (int i = 0; i < d.data[0].keys.length; i++) {
+         if (d.data[0].keys[i].length() >= 1) {
             double x = xValue[MIN] + 1 + i;
-            StdDraw.text( x, y, d.keys[i]); 
+            StdDraw.text( x, y, d.data[0].keys[i]); 
          }
       }
    }
