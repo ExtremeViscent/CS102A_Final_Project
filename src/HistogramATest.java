@@ -104,8 +104,8 @@ public class HistogramATest {
       data.header = obj.getString( "header", "");
       data.footer = obj.getString( "footer", "");
       try{  data.minValue = obj.getJsonNumber( "minvalue").doubleValue(); }catch(Exception ignored){}
-      if (obj.containsKey("objectCount")){
-         data.objectsCount = obj.getInt("objectCount");
+      if (obj.containsKey("objectsCount")){
+         data.objectsCount = obj.getJsonNumber("objectsCount").intValue();
          data.data=new SingleObjectData[data.objectsCount];
          for (int i = 0; i < data.objectsCount; i++) {
             data.data[i]=new SingleObjectData();
