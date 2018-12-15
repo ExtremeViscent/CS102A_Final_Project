@@ -2,6 +2,8 @@ import java.awt.Color;
 import java.awt.Font;
 import java.util.logging.LogManager;
 
+
+
 public class HistogramB {
     Canvas c;
     Formats f;
@@ -77,7 +79,6 @@ public class HistogramB {
         yScale[MIN] = yValue[MIN] - f.margins[SOUTH] * ySpacing - 1;
         yScale[MAX] = yValue[MAX] + f.margins[NORTH] * ySpacing;
         StdDraw.setYscale( yScale[MIN], yScale[MAX]);
-
         double xSpacing = (nBars+1) / (1 - f.margins[WEST] - f.margins[EAST]);
         xScale[MIN] = - f.margins[WEST] * xSpacing - 1;
         xScale[MAX] = nBars + f.margins[EAST] * xSpacing;
@@ -91,21 +92,29 @@ public class HistogramB {
     }
 
     private void plotBars () {
-        double[] a = d.data[0].values;
-        int n = a.length;
-        setHistogramScale( n );
-        if (f.isBarFilled) {
-            StdDraw.setPenColor( f.barFillColor);
-            for (int i = 0; i < n; i++) {
-                StdDraw.filledRectangle(i, a[i]/2, 0.25, a[i]/2);
-                // (x, y, halfWidth, halfHeight)
+        for (int j=0;j<d.objectsCount;j++) {
+            for (int i = 0; i < d.data[1].values.length; i++) {
+                System.out.print(d.data[1].values[i]+" ");
+                d.data[1].values[i]/=2;
+                System.out.println(d.data[1].values[i]);
             }
-        }
-        if (f.hasBarFrame) {
-            StdDraw.setPenColor( f.barFrameColor);
-            for (int i = 0; i < n; i++) {
-                StdDraw.rectangle(i, a[i]/2, 0.25, a[i]/2);
-                // (x, y, halfWidth, halfHeight)
+            double offset=-0.25+j*0.5/d.objectsCount;
+            double[] a = d.data[j].values;
+            int n = a.length;
+            setHistogramScale( n );
+            if (f.isBarFilled) {
+                StdDraw.setPenColor( f.barFillColor);
+                for (int i = 0; i < n; i++) {
+                    StdDraw.filledRectangle(i+offset, a[i]/2, 0.25/d.objectsCount, a[i]/2);
+                    // (x, y, halfWidth, halfHeight)
+                }
+            }
+            if (f.hasBarFrame) {
+                StdDraw.setPenColor( f.barFrameColor);
+                for (int i = 0; i < n; i++) {
+                    StdDraw.rectangle(i+offset, a[i]/2, 0.25/d.objectsCount, a[i]/2);
+                    // (x, y, halfWidth, halfHeight)
+                }
             }
         }
     }

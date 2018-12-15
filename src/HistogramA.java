@@ -179,8 +179,7 @@ public class HistogramA {
       double ySpacing = span / (1 - f.margins[NORTH] - f.margins[SOUTH]);
       yScale[MIN] = yValue[MIN] - f.margins[SOUTH] * ySpacing - 1;
       yScale[MAX] = yValue[MAX] + f.margins[NORTH] * ySpacing;
-      StdDraw.setYscale( yScale[MIN], yScale[MAX]); 
-      
+      StdDraw.setYscale( yScale[MIN], yScale[MAX]);
       double xSpacing = (nBars+1) / (1 - f.margins[WEST] - f.margins[EAST]);
       xScale[MIN] = - f.margins[WEST] * xSpacing - 1;
       xScale[MAX] = nBars + f.margins[EAST] * xSpacing;
