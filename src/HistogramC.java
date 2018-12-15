@@ -97,33 +97,6 @@ public class HistogramC {
         StdDraw.setYscale( c.yScale[MIN], c.yScale[MAX]);
     }
 
-    private void plotBars () {
-        for (int j=0;j<d.objectsCount;j++) {
-            for (int i = 0; i < d.data[1].values.length; i++) {
-                System.out.print(d.data[1].values[i]+" ");
-                d.data[1].values[i]/=2;
-                System.out.println(d.data[1].values[i]);
-            }
-            double offset=-0.25+j*0.5/d.objectsCount;
-            double[] a = d.data[j].values;
-            int n = a.length;
-            setHistogramScale( n );
-            if (f.isBarFilled) {
-                StdDraw.setPenColor( f.barFillColor);
-                for (int i = 0; i < n; i++) {
-                    StdDraw.filledRectangle(i+offset, a[i]/2, 0.25/d.objectsCount, a[i]/2);
-                    // (x, y, halfWidth, halfHeight)
-                }
-            }
-            if (f.hasBarFrame) {
-                StdDraw.setPenColor( f.barFrameColor);
-                for (int i = 0; i < n; i++) {
-                    StdDraw.rectangle(i+offset, a[i]/2, 0.25/d.objectsCount, a[i]/2);
-                    // (x, y, halfWidth, halfHeight)
-                }
-            }
-        }
-    }
     private void steppedPlotBars(double step,double total){
         double fatherParameter=Math.tanh(2)-Math.tanh(-1);
         double childParamerter=Math.tanh(step/total*4-1)-Math.tanh(-1);
