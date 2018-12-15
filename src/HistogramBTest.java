@@ -27,7 +27,7 @@ public class HistogramBTest {
          h =  new HistogramB( canvas, fmts, data);
       } catch (IOException e) {
          System.out.println( e.getMessage());
-      };
+      }
       return h;
    }     
       
