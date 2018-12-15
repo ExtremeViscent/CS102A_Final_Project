@@ -125,8 +125,8 @@ public class HistogramC {
         }
     }
     private void steppedPlotBars(double step,double total){
-        double fatherParameter=Math.tanh(2)-Math.tanh(-2);
-        double childParamerter=Math.tanh(step/total*4-2)-Math.tanh(-2);
+        double fatherParameter=Math.tanh(2)-Math.tanh(-1);
+        double childParamerter=Math.tanh(step/total*4-1)-Math.tanh(-1);
         for (int j=0;j<d.objectsCount;j++) {
             for (int i = 0; i < d.data[1].values.length; i++) {
                 System.out.print(d.data[1].values[i]+" ");
