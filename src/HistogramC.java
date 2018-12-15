@@ -1,5 +1,7 @@
 import java.awt.*;
 
+import static java.lang.Math.tanh;
+
 
 public class HistogramC {
     Canvas c;
@@ -65,7 +67,7 @@ public class HistogramC {
             if (f.hasRightRuler) plotRightRuler();
             if (f.hasHeader) plotHeader();
             if (f.hasFooter) plotFooter();
-            StdDraw.pause(1000/144);
+            StdDraw.pause(500/144);
             StdDraw.show();
         }
     }
@@ -123,6 +125,8 @@ public class HistogramC {
         }
     }
     private void steppedPlotBars(double step,double total){
+        double fatherParameter=Math.tanh(2)-Math.tanh(-2);
+        double childParamerter=Math.tanh(step/total*4-2)-Math.tanh(-2);
         for (int j=0;j<d.objectsCount;j++) {
             for (int i = 0; i < d.data[1].values.length; i++) {
                 System.out.print(d.data[1].values[i]+" ");
@@ -136,14 +140,14 @@ public class HistogramC {
             if (f.isBarFilled) {
                 StdDraw.setPenColor( f.barFillColor);
                 for (int i = 0; i < n; i++) {
-                    StdDraw.filledRectangle(i+offset, a[i]/2*step/total, 0.25/d.objectsCount, a[i]/2*step/total);
+                    StdDraw.filledRectangle(i+offset, a[i]/2*childParamerter/fatherParameter, 0.25/d.objectsCount, a[i]/2*childParamerter/fatherParameter);
                     // (x, y, halfWidth, halfHeight)
                 }
             }
             if (f.hasBarFrame) {
                 StdDraw.setPenColor( f.barFrameColor);
                 for (int i = 0; i < n; i++) {
-                    StdDraw.rectangle(i+offset, a[i]/2*step/total, 0.25/d.objectsCount, a[i]/2*step/total);
+                    StdDraw.rectangle(i+offset, a[i]/2*childParamerter/fatherParameter, 0.25/d.objectsCount, a[i]/2*childParamerter/fatherParameter);
                     // (x, y, halfWidth, halfHeight)
                 }
             }
