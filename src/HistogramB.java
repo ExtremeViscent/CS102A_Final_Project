@@ -32,11 +32,12 @@ public class HistogramB {
         xValue[MAX] = a.length;
 
         yValue[MIN] = d.minValue;
-
         double max = a[0];
-        for (int i = 1; i < a.length; i++)
-            if (max < a[i]) max = a[i];
-
+        for (int i = 0; i < d.objectsCount; i++) {
+            a=d.data[i].values;
+            for (int r = 1; r < a.length; r++)
+                if (max < a[r]) max = a[r];
+        }
         double span = max - yValue[MIN];
         double factor = 1.0;
         if (span >= 1)
@@ -93,11 +94,6 @@ public class HistogramB {
 
     private void plotBars () {
         for (int j=0;j<d.objectsCount;j++) {
-            for (int i = 0; i < d.data[1].values.length; i++) {
-                System.out.print(d.data[1].values[i]+" ");
-                d.data[1].values[i]/=2;
-                System.out.println(d.data[1].values[i]);
-            }
             double offset=-0.25+j*0.5/d.objectsCount;
             double[] a = d.data[j].values;
             int n = a.length;
