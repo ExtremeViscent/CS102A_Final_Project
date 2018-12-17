@@ -93,10 +93,13 @@ public class HistogramC {
                     StdDraw.show();
                 }
             }//Initial plot
-            for (int i = 0; i < d.plotingTime/1000*144; i++) {
+            double totalFrames=d.plotingTime/1000*144;
+            for (int i = 0; i < totalFrames; i++) {
+                double frameInterval=d.plotingTime/1000*144/d.data[0].realTimeData[0].keys.length;
+                int timeNow=(int) (i/frameInterval);
                 StdDraw.clear(c.bgColor);
                 StdDraw.setPenColor(c.color);
-                initialPlotBars((double) i, (double) 144);
+                toPlotBars(timeNow,(i-timeNow*frameInterval)/frameInterval);
                 plotRuler();
                 plotKeys();
                 plotIcon();
@@ -180,6 +183,33 @@ public class HistogramC {
                 StdDraw.setPenColor( f.barFrameColor);
                 for (int i = 0; i < n; i++) {
                     StdDraw.rectangle(i+offset, a[i]/2*childParamerter/fatherParameter, 0.25/d.objectsCount, a[i]/2*childParamerter/fatherParameter);
+                    // (x, y, halfWidth, halfHeight)
+                }
+            }
+        }
+    }
+
+    private void toPlotBars(int timeNow,double offsett){
+        for (int j=0;j<d.objectsCount;j++) {
+            double offset=-0.25+j*0.5/d.objectsCount;
+            double[] a = d.data[j].realTimeData[timeNow].values;
+            double[] deltaValues= new double[d.data[j].realTimeData.length];
+            for (int i = 0; i < deltaValues.length; i++) {
+                deltaValues[i]=d.data[j].realTimeData[timeNow+1].values[i]-a[i];
+            }
+            int n = a.length;
+            setHistogramScale( n );
+            if (f.isBarFilled) {
+                StdDraw.setPenColor( f.barFillColor);
+                for (int i = 0; i < n; i++) {
+                    StdDraw.filledRectangle(i+offset, a[i]/2, 0.25/d.objectsCount, a[i]/2+offsett*deltaValues[i]/2);
+                    // (x, y, halfWidth, halfHeight)
+                }
+            }
+            if (f.hasBarFrame) {
+                StdDraw.setPenColor( f.barFrameColor);
+                for (int i = 0; i < n; i++) {
+                    StdDraw.rectangle(i+offset, a[i]/2, 0.25/d.objectsCount, a[i]/2+offsett*deltaValues[i]/2);
                     // (x, y, halfWidth, halfHeight)
                 }
             }
