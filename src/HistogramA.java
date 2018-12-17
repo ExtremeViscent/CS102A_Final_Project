@@ -27,7 +27,7 @@ class Formats {
    Color headerColor = Color.DARK_GRAY;
    boolean hasFooter = true;
    Color footerColor = new Color(0,63,67);
-   String form = "group";
+   String form;
 
    public void setForm(String form) { this.form = form; }
 
