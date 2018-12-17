@@ -54,22 +54,60 @@ public class HistogramC {
     }
 
     public void draw () {
-        StdDraw.enableDoubleBuffering();
-        setCanvas();
-        for (int i = 0; i < 144; i++) {
-            StdDraw.clear( c.bgColor);
-            StdDraw.setPenColor( c.color);
-            steppedPlotBars((double) i,(double) 144);
-            plotRuler();
-            plotKeys();
-            plotIcon();
-            plotShoes();
-            if (f.hasBorder) plotBorder();
-            if (f.hasRightRuler) plotRightRuler();
-            if (f.hasHeader) plotHeader();
-            if (f.hasFooter) plotFooter();
-            StdDraw.pause(500/144);
-            StdDraw.show();
+        if (!f.isRealTime) {
+            StdDraw.enableDoubleBuffering();
+            setCanvas();
+            for (int i = 0; i < 144; i++) {
+                StdDraw.clear( c.bgColor);
+                StdDraw.setPenColor( c.color);
+                steppedPlotBars((double) i,(double) 144);
+                plotRuler();
+                plotKeys();
+                plotIcon();
+                plotShoes();
+                if (f.hasBorder) plotBorder();
+                if (f.hasRightRuler) plotRightRuler();
+                if (f.hasHeader) plotHeader();
+                if (f.hasFooter) plotFooter();
+                StdDraw.pause(500/144);
+                StdDraw.show();
+            }
+        }
+        else {
+            {
+                StdDraw.enableDoubleBuffering();
+                setCanvas();
+                for (int i = 0; i < 144; i++) {
+                    StdDraw.clear(c.bgColor);
+                    StdDraw.setPenColor(c.color);
+                    initialPlotBars((double) i, (double) 144);
+                    plotRuler();
+                    plotKeys();
+                    plotIcon();
+                    plotShoes();
+                    if (f.hasBorder) plotBorder();
+                    if (f.hasRightRuler) plotRightRuler();
+                    if (f.hasHeader) plotHeader();
+                    if (f.hasFooter) plotFooter();
+                    StdDraw.pause(500 / 144);
+                    StdDraw.show();
+                }
+            }//Initial plot
+            for (int i = 0; i < d.plotingTime/1000*144; i++) {
+                StdDraw.clear(c.bgColor);
+                StdDraw.setPenColor(c.color);
+                initialPlotBars((double) i, (double) 144);
+                plotRuler();
+                plotKeys();
+                plotIcon();
+                plotShoes();
+                if (f.hasBorder) plotBorder();
+                if (f.hasRightRuler) plotRightRuler();
+                if (f.hasHeader) plotHeader();
+                if (f.hasFooter) plotFooter();
+                StdDraw.pause(1000 / 144);
+                StdDraw.show();
+            }
         }
     }
 
@@ -104,6 +142,31 @@ public class HistogramC {
         for (int j=0;j<d.objectsCount;j++) {
             double offset=-0.25+j*0.5/d.objectsCount;
             double[] a = d.data[j].values;
+            int n = a.length;
+            setHistogramScale( n );
+            if (f.isBarFilled) {
+                StdDraw.setPenColor( f.barFillColor);
+                for (int i = 0; i < n; i++) {
+                    StdDraw.filledRectangle(i+offset, a[i]/2*childParamerter/fatherParameter, 0.25/d.objectsCount, a[i]/2*childParamerter/fatherParameter);
+                    // (x, y, halfWidth, halfHeight)
+                }
+            }
+            if (f.hasBarFrame) {
+                StdDraw.setPenColor( f.barFrameColor);
+                for (int i = 0; i < n; i++) {
+                    StdDraw.rectangle(i+offset, a[i]/2*childParamerter/fatherParameter, 0.25/d.objectsCount, a[i]/2*childParamerter/fatherParameter);
+                    // (x, y, halfWidth, halfHeight)
+                }
+            }
+        }
+    }
+
+    private void initialPlotBars(double step,double total){
+        double fatherParameter=Math.tanh(2)-Math.tanh(-1);
+        double childParamerter=Math.tanh(step/total*4-1)-Math.tanh(-1);
+        for (int j=0;j<d.objectsCount;j++) {
+            double offset=-0.25+j*0.5/d.objectsCount;
+            double[] a = d.data[j].realTimeData[0].values;
             int n = a.length;
             setHistogramScale( n );
             if (f.isBarFilled) {
