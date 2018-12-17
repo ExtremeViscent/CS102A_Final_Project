@@ -1,5 +1,6 @@
 import java.awt.Color;
 import java.awt.Font;
+import java.util.Arrays;
 import java.util.logging.LogManager;
 
 
@@ -92,26 +93,70 @@ public class HistogramB {
         StdDraw.setYscale( c.yScale[MIN], c.yScale[MAX]);
     }
 
-    private void plotBars () {
-        for (int j=0;j<d.objectsCount;j++) {
-            double offset=-0.25+j*0.5/d.objectsCount;
-            double[] a = d.data[j].values;
-            int n = a.length;
-            setHistogramScale( n );
-            if (f.isBarFilled) {
-                StdDraw.setPenColor( f.barFillColor);
-                for (int i = 0; i < n; i++) {
-                    StdDraw.filledRectangle(i+offset, a[i]/2, 0.25/d.objectsCount, a[i]/2);
-                    // (x, y, halfWidth, halfHeight)
+    private void plotBars() {
+        switch (f.form) {
+            case "group":
+                for (int j = 0; j < d.objectsCount; j++) {//j组类型数据
+                    for (int i = 0; i < d.data[1].values.length; i++) {
+                        System.out.print(d.data[1].values[i] + " ");
+                        d.data[1].values[i] /= 2;
+                        System.out.println(d.data[1].values[i]);
+                    }
+                    double offset = -0.25 + j * 0.5 / d.objectsCount;
+                    double[] a = d.data[j].values;
+                    int n = a.length;
+                    setHistogramScale(n);
+                    if (f.isBarFilled) {
+                        StdDraw.setPenColor(f.barFillColor);
+                        for (int i = 0; i < n; i++) {
+                            StdDraw.filledRectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+                            // (x, y, halfWidth, halfHeight)
+                        }
+                    }
+                    if (f.hasBarFrame) {
+                        StdDraw.setPenColor(f.barFrameColor);
+                        for (int i = 0; i < n; i++) {
+                            StdDraw.rectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+                            // (x, y, halfWidth, halfHeight)
+                        }
+                    }
                 }
-            }
-            if (f.hasBarFrame) {
-                StdDraw.setPenColor( f.barFrameColor);
-                for (int i = 0; i < n; i++) {
-                    StdDraw.rectangle(i+offset, a[i]/2, 0.25/d.objectsCount, a[i]/2);
-                    // (x, y, halfWidth, halfHeight)
-                }
-            }
+                break;
+
+            case "stack":
+                double[] b = d.data[1].values;
+                int n = b.length;
+                int m = d.objectsCount;
+                double[][] a = new double[m][n];
+
+                for (int j = 0; j < m; j++) {//一个object&给二维数组a赋值
+                    double[] temp = d.data[j].values;//进行转移赋值的
+                    for (int i = 0; i < n; i++) {
+                        a[j][i] = temp[i];
+                    }
+                }//给二维数组a赋值
+
+                for (int i = 0; i < n; i++) {//每行
+                    double[] bijiao = new double[m];
+                    for (int j = 0; j < m; j++) {//每列的比较
+                        bijiao[j] = a[j][i];
+                    }
+                    Arrays.sort(bijiao);
+                    for (int j = m; j > 0; j--) {//每列的打印
+                        setHistogramScale(n);
+                        if (f.isBarFilled) {
+                            StdDraw.setPenColor(f.barFillColor);
+                            StdDraw.filledRectangle(i, bijiao[j] / 2, 0.25, bijiao[j] / 2);
+                            // (x, y, halfWidth, halfHeight)
+
+                        }
+                        if (f.hasBarFrame) {
+                            StdDraw.setPenColor(f.barFrameColor);
+                            StdDraw.rectangle(i, bijiao[j] / 2, 0.25, bijiao[j] / 2);
+                            // (x, y, halfWidth, halfHeight)
+                        }
+                    }
+                }break;
         }
     }
 
