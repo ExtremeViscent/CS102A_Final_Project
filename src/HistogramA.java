@@ -27,9 +27,6 @@ class Formats {
    Color headerColor = Color.DARK_GRAY;
    boolean hasFooter = true;
    Color footerColor = new Color(0,63,67);
-   String form = "group";
-
-   public void setForm(String form) { this.form = form; }
 
    public void setBarFillColor(Color barFillColor) {
       this.barFillColor = barFillColor;
