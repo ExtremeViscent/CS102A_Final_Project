@@ -63,8 +63,8 @@ public class HistogramC {
                 steppedPlotBars((double) i,(double) 144);
                 plotRuler();
                 plotKeys();
-                plotIcon();
-                plotShoes();
+             //   plotIcon();
+        //        plotShoes();
                 if (f.hasBorder) plotBorder();
                 if (f.hasRightRuler) plotRightRuler();
                 if (f.hasHeader) plotHeader();
