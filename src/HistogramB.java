@@ -97,11 +97,6 @@ public class HistogramB {
         switch (f.form) {
             case "group":
                 for (int j = 0; j < d.objectsCount; j++) {//j组类型数据
-                    for (int i = 0; i < d.data[1].values.length; i++) {
-                        System.out.print(d.data[1].values[i] + " ");
-                        d.data[1].values[i] /= 2;
-                        System.out.println(d.data[1].values[i]);
-                    }
                     double offset = -0.25 + j * 0.5 / d.objectsCount;
                     double[] a = d.data[j].values;
                     int n = a.length;
