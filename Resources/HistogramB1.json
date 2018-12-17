@@ -24,7 +24,8 @@
       "headercolor" : [100, 100, 100],
       "hasfooter" : true,
       "footercolor" : [0, 200, 200],
-      "form" : "group"
+      "form" : "stack",
+      "isRealTime": true
    },
      
    "data" : { 
@@ -33,6 +34,9 @@
       "minvalue" : 0.0,
       "objectsCount": 2,
       "name": ["zyq","sez"],
+      "plotingTime": 10,
+
+
       "zyq": {
         "keys" : [
           "1952", "", "", "", "", "", "", "",

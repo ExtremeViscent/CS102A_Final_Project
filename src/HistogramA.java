@@ -107,12 +107,12 @@ class SingleObjectData{
    String name="";
    String[] keys = { };
    double[] values = { };
+   int timesCount=1;
    SingleTimedData[] realTimeData;
    public SingleObjectData(){super();}
 }
 
 class SingleTimedData{
-   String name="";
    String[] keys = { };
    double[] values = { };
    public SingleTimedData(){super();}

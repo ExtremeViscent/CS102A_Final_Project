@@ -102,7 +102,7 @@ public class HistogramBTest {
       try{fmts.headerColor = getColorFrom( obj.getJsonArray( "headercolor"));}catch(Exception ignored){}
       try{fmts.hasFooter = obj.getBoolean( "hasfooter");}catch(Exception ignored){}
       try{fmts.footerColor = getColorFrom( obj.getJsonArray( "footercolor"));}catch(Exception ignored){}
-      try{fmts.form = toStringArray(obj.getJsonArray( "form"))[0];}catch(Exception ignored){}
+      try{fmts.form = obj.getString("form","");}catch(Exception ignored){}
       return fmts;
    }
 

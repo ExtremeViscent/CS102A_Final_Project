@@ -5,6 +5,14 @@ import javax.json.*;
 public class HistogramATest {
    public static void main(String[] args) {
       HistogramA h = createHistogramAFrom( args[0] );
+      StringBuffer result=new StringBuffer();
+      for (int i = 0; i < h.d.data[0].keys.length; i++) {
+         result.append("\""+h.d.data[0].keys[i]+"\":{\n");
+         result.append("\"keys\":[\"GDP\"],\n");
+         result.append("\"values\":["+h.d.data[0].values[i]+"],\n");
+         result.append("},\n");
+      }
+      System.out.print(result.toString());
       h.draw();
    }   
 
