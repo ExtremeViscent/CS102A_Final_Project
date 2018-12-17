@@ -11,6 +11,7 @@ class Canvas {
 }
 
 class Formats {
+   boolean isRealTime=false;
    double[] margins = { 0.15, 0.15, 0.1, 0.05 };  // NORTH, SOUTH, WEST, EAST
    boolean isBarFilled = true;
    Color barFillColor = new Color(237,108,0);
@@ -95,6 +96,7 @@ class HistogramData {
    String header = "";
    String footer = "";
    double minValue = 0.0;
+   double plotingTime=1;
    public void setMinValue(double minValue) {
       this.minValue = minValue;
    }
@@ -105,7 +107,15 @@ class SingleObjectData{
    String name="";
    String[] keys = { };
    double[] values = { };
+   SingleTimedData[] realTimeData;
    public SingleObjectData(){super();}
+}
+
+class SingleTimedData{
+   String name="";
+   String[] keys = { };
+   double[] values = { };
+   public SingleTimedData(){super();}
 }
 
 public class HistogramA {
