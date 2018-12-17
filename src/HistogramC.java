@@ -63,8 +63,8 @@ public class HistogramC {
                 steppedPlotBars((double) i,(double) 144);
                 plotRuler();
                 plotKeys();
-             //   plotIcon();
-        //        plotShoes();
+                plotIcon();
+                plotShoes();
                 if (f.hasBorder) plotBorder();
                 if (f.hasRightRuler) plotRightRuler();
                 if (f.hasHeader) plotHeader();
@@ -256,7 +256,7 @@ public class HistogramC {
         Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
         StdDraw.setFont( font );
         StdDraw.setPenColor( f.keyColor );
-        final double y = yValue[MIN] - 0.5 * rulerStep;
+        final double y = yValue[MIN] - (yValue[MIN]-yScale[MIN])*0.2;
         for (int i = 0; i < d.data[0].keys.length; i++) {
             if (d.data[0].keys[i].length() >= 1) {
                 double x = xValue[MIN] + 1 + i;
@@ -307,16 +307,17 @@ public class HistogramC {
         Font font = new Font( "consolas", Font.BOLD, 16 ); // TO BE Customized
         StdDraw.setFont( font );
         double x = .5 * (xScale[MIN] + xScale[MAX]);
-        double y = .5 * (yScale[MIN] + yValue[MIN]);
+        double y = (yValue[MIN]-(yValue[MIN]-yScale[MIN])/2);
         StdDraw.setPenColor( f.footerColor );
         StdDraw.text( x, y, d.footer );
     }
-
     private void plotIcon(){
-        double scaledWidth=(xValue[MAX]-xValue[MIN])/4;
-        double scaledHeight=(yValue[MAX] - yValue[MIN])/5;
-        System.out.println(c.x);
-        System.out.println((yValue[MAX] - yValue[MIN])+" "+(yValue[MAX] - yValue[MIN])*296/62);
+        double ineed=(.5 * (yValue[MIN] + yValue[MAX]))+(.5 * (yValue[MAX] - yValue[MIN]));
+        double scaledHeight=(yScale[MAX]-ineed);
+        double scaledWidth=scaledHeight/(yScale[1]-yScale[0])*(130.0/62.0)*(xScale[1]-xScale[0]);
+        System.out.println(ineed+" "+scaledHeight+" "+scaledWidth);
+        scaledHeight*=0.8;
+        scaledWidth*=0.8;
         StdDraw.picture((xScale[MAX])-scaledWidth/2,(yScale[MAX])-scaledHeight/2,"LOGO.png",scaledWidth,scaledHeight);
     }
 
@@ -327,14 +328,14 @@ public class HistogramC {
         double y0 = (yScale[MAX] + yScale[MIN])/2;
         double changdu1 = (xlength)/4;
         double changdu2 = 3*changdu1;
-        double kuandu = 48000;
+        double kuandu = 0.25*(yValue[MIN]-yScale[MIN]);
         double a1 = changdu1/2-xlength/2;
         double a2 = xlength/2-changdu2/2;
         double b = kuandu/2-ylength/2;
         StdDraw.setPenColor(43,183,179);
-        StdDraw.filledRectangle(x0+a1, y0+kuandu/2-ylength/2, changdu1/2 , 24000);
+        StdDraw.filledRectangle(x0+a1, y0+kuandu/2-ylength/2, changdu1/2 , 0.125*(yValue[MIN]-yScale[MIN]));
         StdDraw.setPenColor(237,108,0);
-        StdDraw.filledRectangle(x0+a2, y0+kuandu/2-ylength/2, changdu2/2 , 24000);
+        StdDraw.filledRectangle(x0+a2, y0+kuandu/2-ylength/2, changdu2/2 , 0.125*(yValue[MIN]-yScale[MIN]));
     }
 
 
