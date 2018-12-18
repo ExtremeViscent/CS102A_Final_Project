@@ -1,6 +1,12 @@
-import java.awt.*;
 
-import static java.lang.Math.tanh;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+
+import java.awt.*;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 
 
 public class HistogramC {
@@ -53,7 +59,34 @@ public class HistogramC {
         }
     }
 
-    public void draw () {
+    class ShinTakaraJima implements Runnable{
+        @Override
+        public void run() {
+            File file=new File("C:\\Users\\zhang\\IdeaProjects\\CS102A_Final_Project\\Resources\\E.mp3");
+            FileInputStream fis= null;
+            try {
+                fis = new FileInputStream(file);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+            BufferedInputStream stream=new BufferedInputStream(fis);
+            Player player= null;
+            try {
+                player = new Player(stream);
+            } catch (JavaLayerException e) {
+                e.printStackTrace();
+            }
+            try {
+                player.play();
+            } catch (JavaLayerException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void draw () throws JavaLayerException {
+        Runnable s=new ShinTakaraJima();
+        new Thread(s).start();
         if (!f.isRealTime) {
             StdDraw.enableDoubleBuffering();
             setCanvas();
@@ -217,7 +250,7 @@ public class HistogramC {
     }
 
     private void plotRuler() {
-        Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
+        Font font = new Font( "arial", Font.PLAIN, 12 ); // TO BE Customized
         StdDraw.setFont( font );
         StdDraw.setPenColor( f.rulerColor );
         final double x0 = xValue[MIN] - 0.05, x1 = xValue[MIN] + 0.05;
@@ -253,15 +286,16 @@ public class HistogramC {
     }
 
     private void plotKeys() {
-        Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
+        Font font = new Font( "arial", Font.PLAIN, 12 ); // TO BE Customized
         StdDraw.setFont( font );
         StdDraw.setPenColor( f.keyColor );
         final double y = yValue[MIN] - (yValue[MIN]-yScale[MIN])*0.2;
         for (int i = 0; i < d.data[0].keys.length; i++) {
+            if (i%5==0){
             if (d.data[0].keys[i].length() >= 1) {
                 double x = xValue[MIN] + 1 + i;
                 StdDraw.text( x, y, d.data[0].keys[i]);
-            }
+            }}
         }
     }
 
@@ -276,7 +310,7 @@ public class HistogramC {
     }
 
     private void plotRightRuler() {
-        Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
+        Font font = new Font( "arial", Font.PLAIN, 12 ); // TO BE Customized
         StdDraw.setFont( font );
         StdDraw.setPenColor( f.rulerColor );
         final double x0 = xValue[MAX] - 0.05, x1 = xValue[MAX] + 0.05;
@@ -304,7 +338,7 @@ public class HistogramC {
     }
 
     private void plotFooter() {
-        Font font = new Font( "consolas", Font.BOLD, 16 ); // TO BE Customized
+        Font font = new Font( "arial", Font.BOLD, 16 ); // TO BE Customized
         StdDraw.setFont( font );
         double x = .5 * (xScale[MIN] + xScale[MAX]);
         double y = (yValue[MIN]-(yValue[MIN]-yScale[MIN])/2);

@@ -1,15 +1,16 @@
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+
 import java.awt.*;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 
 public class HistogramCTest {
-   public static void main(String[] args) {
+   public static void main(String[] args) throws JavaLayerException {
       HistogramC h = createHistogramCFrom( args[0] );
       h.draw();
    }   
@@ -110,50 +111,7 @@ public class HistogramCTest {
       data.header = obj.getString( "header", "");
       data.footer = obj.getString( "footer", "");
       try{  data.minValue = obj.getJsonNumber( "minvalue").doubleValue(); }catch(Exception ignored){}
-      if (obj.containsKey("dataType")&&Boolean.parseBoolean(obj.getString("dataType"))){
-         data.plotingTime=obj.getJsonNumber("plotingTime").doubleValue();
-         if (obj.containsKey("objectsCount")) {
-            data.objectsCount = obj.getJsonNumber("objectsCount").intValue();
-            data.data = new SingleObjectData[data.objectsCount];
-            for (int i = 0; i < data.objectsCount; i++) {
-               data.data[i] = new SingleObjectData();
-               data.data[i].name = toStringArray(obj.getJsonArray("name"))[i];
-            }
-            for (int i = 0; i < data.objectsCount; i++) {
-               JsonObject obj_ = obj.getJsonObject(data.data[i].name);
-               int timesCount=obj_.getJsonNumber("timesCount").intValue();
-               data.data[i].realTimeData=new SingleTimedData[timesCount];
-               for (int j = 0; j < timesCount; j++) {
-                  data.data[i].realTimeData[j]=new SingleTimedData();
-               }
-
-               String[] times=toStringArray(obj_.getJsonArray("times"));
-               for (int j = 0; j < timesCount; j++) {
-                  JsonObject obj_1=obj_.getJsonObject(times[j]);
-                  data.data[i].realTimeData[j].keys = toStringArray(obj_1.getJsonArray("keys"));
-                  data.data[i].realTimeData[j].values = toDoubleArray(obj_1.getJsonArray("values"));
-               }
-            }
-         }
-         else {
-            data.objectsCount = 1;
-            data.data = new SingleObjectData[1];
-            data.data[0] = new SingleObjectData();
-            int timesCount=obj.getJsonNumber("timesCount").intValue();
-            data.data[0].realTimeData=new SingleTimedData[timesCount];
-            for (int j = 0; j < timesCount; j++) {
-               data.data[0].realTimeData[j]=new SingleTimedData();
-            }
-            String[] times=toStringArray(obj.getJsonArray("times"));
-            for (int j = 0; j < timesCount; j++) {
-               JsonObject obj_=obj.getJsonObject(times[j]);
-               data.data[0].realTimeData[j].keys = toStringArray(obj_.getJsonArray("keys"));
-               data.data[0].realTimeData[j].values = toDoubleArray(obj_.getJsonArray("values"));
-            }
-         }
-      }
-      else {
-         if (obj.containsKey("objectsCount")) {
+      if (obj.containsKey("objectsCount")) {
             data.objectsCount = obj.getJsonNumber("objectsCount").intValue();
             data.data = new SingleObjectData[data.objectsCount];
             for (int i = 0; i < data.objectsCount; i++) {
@@ -166,14 +124,13 @@ public class HistogramCTest {
                data.data[i].values = toDoubleArray(obj_.getJsonArray("values"));
             }
          }
-         else {
+      else {
             data.objectsCount = 1;
             data.data = new SingleObjectData[1];
             data.data[0] = new SingleObjectData();
             data.data[0].keys = toStringArray(obj.getJsonArray("keys"));
             data.data[0].values = toDoubleArray(obj.getJsonArray("values"));
          }
-      }
       return data;
    }
 }
