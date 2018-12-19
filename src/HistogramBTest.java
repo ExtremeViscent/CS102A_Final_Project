@@ -130,7 +130,8 @@ public class HistogramBTest {
          data.data=new SingleObjectData[1];
          data.data[0]=new SingleObjectData();
          data.data[0].keys = toStringArray( obj.getJsonArray( "keys"));
-         data.data[0].values = toDoubleArray( obj.getJsonArray( "values"));}
+         data.data[0].values = toDoubleArray( obj.getJsonArray( "values"));
+         data.data[0].name = toStringArray( obj.getJsonArray("name"))[0];}
       return data;
    }
 }

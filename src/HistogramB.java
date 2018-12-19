@@ -4,17 +4,19 @@ import java.util.Arrays;
 import java.util.logging.LogManager;
 
 
-@Deprecated
+
 public class HistogramB {
     Canvas c;
     Formats f;
     HistogramData d;
+    int[][] color;
     double[] xValue;  // MIN, MAX
     double[] yValue;  // MIN, MAX
     double[] xScale;  // MIN, MAX
     double[] yScale;  // MIN, MAX
     int rulerGrade;
     double rulerStep;
+
 
     public HistogramB(Canvas c, Formats f, HistogramData d) {
         this.c = c;
@@ -72,6 +74,16 @@ public class HistogramB {
     }
 
     private void setCanvas () {
+        int m = d.objectsCount;
+        color = new int[m][3];
+        for(int i = 0; i < m; i++){//给每一个object赋颜色!!!!!!!!!!!
+            int a1 = (int)(Math.random()*255);
+            int a2 = (int)(Math.random()*255);
+            int a3 = (int)(Math.random()*255);
+            color[i][0] = a1;
+            color[i][1] = a2;
+            color[i][2] = a3;
+        }
         StdDraw.setCanvasSize( c.x, c.y );
         setOriginalScale();
         StdDraw.clear( c.bgColor);
@@ -98,94 +110,78 @@ public class HistogramB {
 
     private void plotBars() {
         if (f.form.equals("group")) {
-            groupPlotBars();
-        }
-        else if (f.form.equals("static")){
-           // plotStaticBars();
-        }
-    }
-    void groupPlotBars(){
-        for (int j = 0; j < d.objectsCount; j++) {//j组类型数据
-            double offset = -0.25 + j * 0.5 / d.objectsCount;
-            double[] a = d.data[j].values;
-            int n = a.length;
-            setHistogramScale(n);
-            if (f.isBarFilled) {
-                StdDraw.setPenColor(f.barFillColor);
-                for (int i = 0; i < n; i++) {
-                    StdDraw.filledRectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
-                    // (x, y, halfWidth, halfHeight)
+            for (int j = 0; j < d.objectsCount; j++) {//j组类型数据
+                double offset = -0.25 + j * 0.5 / d.objectsCount;
+                double[] a = d.data[j].values;
+                int n = a.length;
+                setHistogramScale(n);
+                if (f.isBarFilled) {
+                    StdDraw.setPenColor(f.barFillColor);
+                    for (int i = 0; i < n; i++) {
+                        StdDraw.filledRectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+                        // (x, y, halfWidth, halfHeight)
+                    }
                 }
-            }
-            if (f.hasBarFrame) {
-                StdDraw.setPenColor(f.barFrameColor);
-                for (int i = 0; i < n; i++) {
-                    StdDraw.rectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
-                    // (x, y, halfWidth, halfHeight)
-                }
-            }
-        }
-    }
-
-    void stackPlotBars(){
-        double[] b = d.data[1].values;
-        int n = b.length;
-        int m = d.objectsCount;
-        double[][] a = new double[m][n];
-
-        for (int j = 0; j < m; j++) {//一个object&给二维数组a赋值
-            double[] temp = d.data[j].values;//进行转移赋值的
-            for (int i = 0; i < n; i++) {
-                a[j][i] = temp[i];
-            }
-        }//给二维数组a赋值
-
-        int[][] color = new int[m][3];
-        for(int i = 0; i < m; i++){//给每一个object赋颜色!!!!!!!!!!!
-            int a1 = (int)(Math.random()*255);
-            int a2 = (int)(Math.random()*255);
-            int a3 = (int)(Math.random()*255);
-            color[i][0] = a1;
-            color[i][1] = a2;
-            color[i][2] = a3;
-        }
-
-        for (int i = 0; i < n; i++) {//每行
-            double[] bijiao = new double[m];
-            for (int j = 0; j < m; j++) {//每列的比较
-                bijiao[j] = a[j][i];
-            }
-            int[] address = new int[m];
-            for(int k = 0;k < m;k++) {
-                address[k] = k;
-            }
-            for(int j = 0; j<m ;j++ ) {//
-                for(int l = 0 ; l<m-1 ; l++) {
-                    if(bijiao[l] > bijiao[l+1]) {
-                        double min = bijiao[l+1];
-                        bijiao[l+1] = bijiao[l];
-                        bijiao[l] = min;
-
-                        int f = address[l+1];
-                        address[l+1] = address[l];
-                        address[l] = f;
+                if (f.hasBarFrame) {
+                    StdDraw.setPenColor(f.barFrameColor);
+                    for (int i = 0; i < n; i++) {
+                        StdDraw.rectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+                        // (x, y, halfWidth, halfHeight)
                     }
                 }
             }
-            for (int j = m; j > 0; j--) {//每列的打印
-                int index = 0;
-                setHistogramScale(n);
-                if (f.isBarFilled) {
-                    StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
-                    StdDraw.filledRectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
-                    // (x, y, halfWidth, halfHeight)
+        }
+        else {
+            double[] b = d.data[1].values;
+            int n = b.length;
+            int m = d.objectsCount;
+            double[][] a = new double[m][n];
 
+            for (int j = 0; j < m; j++) {//一个object&给二维数组a赋值
+                double[] temp = d.data[j].values;//进行转移赋值的
+                for (int i = 0; i < n; i++) {
+                    a[j][i] = temp[i];
                 }
-                if (f.hasBarFrame) {
+            }//给二维数组a赋值
 
-                    StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
-                    StdDraw.rectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
-                    // (x, y, halfWidth, halfHeight)
+
+            for (int i = 0; i < n; i++) {//每行
+                double[] bijiao = new double[m];
+                for (int j = 0; j < m; j++) {//每列的比较
+                    bijiao[j] = a[j][i];
+                }
+                int[] address = new int[m];
+                for(int k = 0;k < m;k++) {
+                    address[k] = k;
+                }
+                for(int j = 0; j<m ;j++ ) {//
+                    for(int l = 0 ; l<m-1 ; l++) {
+                        if(bijiao[l] > bijiao[l+1]) {
+                            double min = bijiao[l+1];
+                            bijiao[l+1] = bijiao[l];
+                            bijiao[l] = min;
+
+                            int f = address[l+1];
+                            address[l+1] = address[l];
+                            address[l] = f;
+                        }
+                    }
+                }
+                for (int j = m; j > 0; j--) {//每列的打印
+                    int index = 0;
+                    setHistogramScale(n);
+                    if (f.isBarFilled) {
+                        StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
+                        StdDraw.filledRectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
+                        // (x, y, halfWidth, halfHeight)
+
+                    }
+                    if (f.hasBarFrame) {
+
+                        StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
+                        StdDraw.rectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
+                        // (x, y, halfWidth, halfHeight)
+                    }
                 }
             }
         }
@@ -281,7 +277,7 @@ public class HistogramB {
     }
 
     private void plotFooter() {
-        Font font = new Font( "consolas", Font.BOLD, 16 ); // TO BE Customized
+        Font font = new Font( "Arial", Font.BOLD, 16 ); // TO BE Customized
         StdDraw.setFont( font );
         double x = .5 * (xScale[MIN] + xScale[MAX]);
         double y = (yValue[MIN]-(yValue[MIN]-yScale[MIN])/3*2.15);
@@ -319,16 +315,46 @@ public class HistogramB {
     private void plotFangKuai(){
         double xlength = xScale[MAX] - xScale[MIN];
         double ylength = yScale[MAX] - yScale[MIN];
+        double xzuobiaolength = xValue[MAX] - xScale[MIN];
         double x0 = (xScale[MAX] + xScale[MIN])/2;
         double y0 = (yScale[MAX] + yScale[MIN])/2;
         double yjianju = yValue[MIN]-yScale[MIN];
         double xjianju = xlength*yjianju/ylength;
         double ychangdu = yjianju*0.1;
         double xchangdu = xjianju*0.045;
+        /*StdDraw.setPenColor(0,0,255);
+        StdDraw.filledRectangle(x0,yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.33),xchangdu/2,ychangdu/2);
         StdDraw.setPenColor(0,0,255);
-        StdDraw.filledRectangle(x0,yValue[MIN]-(yValue[MIN]-yScale[MIN]),xchangdu/2,ychangdu/2);
-        StdDraw.setPenColor(0,0,255);
-        StdDraw.filledRectangle(x0,y0,xchangdu/2,ychangdu/2);
+        StdDraw.filledRectangle(x0,yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.33),xchangdu/2,ychangdu/2);
+        StdDraw.setPenColor(0,255,0);
+        StdDraw.filledRectangle(x0,yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.52),xchangdu/2,ychangdu/2);
+        StdDraw.setPenColor(0,255,0);
+        StdDraw.filledRectangle(x0,yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.52),xchangdu/2,ychangdu/2);*/
+        double jiangekuandu = xzuobiaolength / ((d.objectsCount+1)/2);
+        for(int i = 0; i < d.objectsCount/2; i++){//打印方块！！！！！！！！！！！！！！！！！！！！！
+            StdDraw.setPenColor(color[i][0],color[i][1],color[i][2]);
+            StdDraw.filledRectangle(-jiangekuandu+jiangekuandu*i,yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.52),xchangdu/2,ychangdu/2);
+            StdDraw.setPenColor(color[i][0],color[i][1],color[i][2]);
+            StdDraw.filledRectangle(-jiangekuandu+jiangekuandu*i,yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.52),xchangdu/2,ychangdu/2);
+        }
+        for(int i = d.objectsCount/2; i < d.objectsCount; i++){
+            StdDraw.setPenColor(color[i][0],color[i][1],color[i][2]);
+            StdDraw.filledRectangle(0 + -jiangekuandu+jiangekuandu*(i-d.objectsCount/2),yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.33),xchangdu/2,ychangdu/2);
+            StdDraw.setPenColor(color[i][0],color[i][1],color[i][2]);
+            StdDraw.filledRectangle(0 + -jiangekuandu+jiangekuandu*(i-d.objectsCount/2),yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.33),xchangdu/2,ychangdu/2);
+        }
+
+
+        Font font = new Font( "Arial", Font.BOLD, 8 ); // TO BE Customized
+        StdDraw.setFont( font );
+        for(int i = 0; i < d.objectsCount/2; i++){//打印字！！！！！！！！！！！！！！！！！！！！！！！
+            StdDraw.text(-jiangekuandu+jiangekuandu*i+jiangekuandu*0.5,yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.52),d.data[i].name);
+        }
+        for(int i = d.objectsCount/2; i < d.objectsCount; i++){
+            StdDraw.text(-jiangekuandu+jiangekuandu*(i-d.objectsCount/2)+jiangekuandu*0.5,yValue[MIN]-(yValue[MIN]-yScale[MIN]*0.33),d.data[i].name);
+        }
+
+
     }
 
     private final static int NORTH = 0;
