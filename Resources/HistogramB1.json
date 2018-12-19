@@ -24,8 +24,8 @@
       "headercolor" : [100, 100, 100],
       "hasfooter" : true,
       "footercolor" : [0, 200, 200],
-      "form" : "stack",
-      "isRealTime": false
+      "form" : "realTime",
+     "mode": "dynamic"
    },
      
    "data" : { 

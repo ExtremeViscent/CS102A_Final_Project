@@ -1,5 +1,12 @@
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+
 import java.awt.Color;
 import java.awt.Font;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.logging.LogManager;
 
 class Canvas {
@@ -28,6 +35,7 @@ class Formats {
    boolean hasFooter = true;
    Color footerColor = new Color(0,63,67);
    String form;
+   String mode="static";
 
    public void setForm(String form) { this.form = form; }
 
@@ -146,42 +154,137 @@ public class HistogramA {
       xValue[MIN] = -1;
       xValue[MAX] = a.length;
 
-      yValue[MIN] = d.minValue;
+        yValue[MIN] = d.minValue;
+        double max = a[0];
+        for (int i = 0; i < d.objectsCount; i++) {
+            a=d.data[i].values;
+            for (int r = 1; r < a.length; r++)
+                if (max < a[r]) max = a[r];
+        }
+        double span = max - yValue[MIN];
+        double factor = 1.0;
+        if (span >= 1)
+            while (span >= 10) { span /= 10; factor *= 10; }
+        else
+            while (span < 1)   { span *= 10; factor /= 10; }
+        int nSpan = (int)Math.ceil(span);
+        yValue[MAX] = yValue[MIN] + (factor) * nSpan;
+        switch (nSpan) {
+            case 1 :  rulerGrade = 5; rulerStep = factor/5; break;
+            case 2 :
+            case 3 :  rulerGrade = nSpan*2; rulerStep = factor/2; break;
+            default : rulerGrade = nSpan; rulerStep = factor; break;
+        }
+    }
 
-      double max = a[0];
-      for (int i = 1; i < a.length; i++)
-         if (max < a[i]) max = a[i];
-  
-      double span = max - yValue[MIN];
-      double factor = 1.0;
-      if (span >= 1)
-         while (span >= 10) { span /= 10; factor *= 10; } 
-      else
-         while (span < 1)   { span *= 10; factor /= 10; }
-      int nSpan = (int)Math.ceil(span);
-      yValue[MAX] = yValue[MIN] + factor * nSpan;
-      switch (nSpan) {
-         case 1 :  rulerGrade = 5; rulerStep = factor/5; break;
-         case 2 : 
-         case 3 :  rulerGrade = nSpan*2; rulerStep = factor/2; break;
-         default : rulerGrade = nSpan; rulerStep = factor; break;
-      }   
+   class ShinTakaraJima implements Runnable{
+      @Override
+      public void run() {
+         File file=new File("C:\\Users\\zhang\\IdeaProjects\\CS102A_Final_Project\\Resources\\E.mp3");
+         FileInputStream fis= null;
+         try {
+            fis = new FileInputStream(file);
+         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+         }
+         BufferedInputStream stream=new BufferedInputStream(fis);
+         Player player= null;
+         try {
+            player = new Player(stream);
+         } catch (JavaLayerException e) {
+            e.printStackTrace();
+         }
+         try {
+            player.play();
+         } catch (JavaLayerException e) {
+            e.printStackTrace();
+         }
+      }
    }
 
    public void draw () {
       StdDraw.enableDoubleBuffering();
-      setCanvas();
-      plotBars();
-      plotRuler();
-      plotKeys();
-      plotIcon();
-      plotShoes();
-      plotFangKuai();
-      if (f.hasBorder) plotBorder();
-      if (f.hasRightRuler) plotRightRuler();
-      if (f.hasHeader) plotHeader();
-      if (f.hasFooter) plotFooter();
-      StdDraw.show();
+      Runnable s=new ShinTakaraJima();
+      new Thread(s).start();
+      if (f.mode.equals("static")) {
+         StdDraw.enableDoubleBuffering();
+         setCanvas();
+         plotBars(1,1);
+         plotRuler();
+         plotKeys();
+         plotIcon();
+         plotShoes();
+         plotFangKuai();
+         if (f.hasBorder) plotBorder();
+         if (f.hasRightRuler) plotRightRuler();
+         if (f.hasHeader) plotHeader();
+         if (f.hasFooter) plotFooter();
+         StdDraw.show();
+      }
+      //静态
+      else {
+         if (!f.form.equals("realTime")) {
+            StdDraw.enableDoubleBuffering();
+            setCanvas();
+            for (int i = 0; i < 144; i++) {
+               StdDraw.clear( c.bgColor);
+               StdDraw.setPenColor( c.color);
+               plotBars( i,144);
+               plotRuler();
+               plotKeys();
+               plotIcon();
+               plotShoes();
+               if (f.hasBorder) plotBorder();
+               if (f.hasRightRuler) plotRightRuler();
+               if (f.hasHeader) plotHeader();
+               if (f.hasFooter) plotFooter();
+               StdDraw.pause(3);
+               System.out.println(i);
+               StdDraw.show();
+            }
+         }
+         else {
+            { setCanvas();
+               for (int i = 0; i < 144; i++) {
+                  StdDraw.clear( c.bgColor);
+                  StdDraw.setPenColor( c.color);
+                  dateSteppedPlotBars(i,144,0);
+                  plotRuler();
+                  plotKeys();
+                  plotIcon();
+                  plotShoes();
+                  if (f.hasBorder) plotBorder();
+                  if (f.hasRightRuler) plotRightRuler();
+                  if (f.hasHeader) plotHeader();
+                  if (f.hasFooter) plotFooter();
+                  StdDraw.pause(3);
+                  StdDraw.show();
+               }
+            }
+            //initial plot
+            {
+               double totalFrames = d.objectsCount * 144;
+               for (int r = 1; r < d.data[0].keys.length; r++) {
+                  for (int j = 0; j < 144; j++) {
+                     StdDraw.clear(c.bgColor);
+                     StdDraw.setPenColor(c.color);
+                     dateSteppedPlotBars(j, 144, r);
+                     plotRuler();
+                     plotKeys();
+                     plotIcon();
+                     plotShoes();
+                     if (f.hasBorder) plotBorder();
+                     if (f.hasRightRuler) plotRightRuler();
+                     if (f.hasHeader) plotHeader();
+                     if (f.hasFooter) plotFooter();
+                     StdDraw.pause(1000 / 144);
+                     StdDraw.show();
+                  }
+               }
+            }
+         }
+      }
+      //动态
    }
 
    private void setCanvas () {
@@ -201,7 +304,7 @@ public class HistogramA {
       xScale[MIN] = - f.margins[WEST] * xSpacing - 1;
       xScale[MAX] = nBars + f.margins[EAST] * xSpacing;
       StdDraw.setXscale( xScale[MIN], xScale[MAX]);
-      System.out.println(xScale[0]+" "+xScale[1]);
+      //(xScale[0]+" "+xScale[1]);
    }
 
    private void setOriginalScale() {
@@ -209,19 +312,62 @@ public class HistogramA {
       StdDraw.setYscale( c.yScale[MIN], c.yScale[MAX]);
    }
 
-   private void plotBars() {
-      if (f.form.equals("group")) {
-         groupPlotBars();
-      }
-      else if (f.form.equals("static")){
-         plotStaticBars();
-      }
+   private void plotBars(double step,double total) {
+      if (f.mode.equals("dynamic")){
+          if (f.form.equals("group")) {
+              groupPlotBars(step,total);
+          }
+          else {
+              stackPlotBars(step,total);
+          }
+      }//动态画法
       else {
-         stackPlotBars();
+         if (f.form.equals("group")) {
+            groupPlotBars(1,1);
+         }
+         else if (f.form.equals("stack")){
+            stackPlotBars(1,1);
+         }
+         else plotStaticBars();
+      }//静态画法
+   }
+
+   private void dateSteppedPlotBars(double step,double total,int date) {
+      double fatherParameter=Math.tanh(2)-Math.tanh(-1);
+      double childParamerter=Math.tanh(step/total*4-1)-Math.tanh(-1);
+      double[] a = d.data[date].values;
+      double[] delta=new double[d.data[date].values.length];
+      if (date!=0) {
+         for (int i = 0; i < delta.length; i++) {
+            delta[i] = a[i] - d.data[date - 1].values[i];
+         }
+      }
+      else for (int i = 0; i < delta.length; i++) {
+         delta[i]=0;
+      }
+      int n = a.length;
+      setHistogramScale( n );
+      if (f.isBarFilled) {
+         StdDraw.setPenColor( f.barFillColor);
+         for (int i = 0; i < n; i++) {
+            final double v = delta[i] * (1/childParamerter * fatherParameter) / 2;
+            StdDraw.filledRectangle(i, Math.abs((a[i]/2- v)), 0.25, Math.abs((a[i]/2- v)));
+            // (x, y, halfWidth, halfHeight)
+         }
+      }
+      if (f.hasBarFrame) {
+         StdDraw.setPenColor( f.barFrameColor);
+         for (int i = 0; i < n; i++) {
+            double v = delta[i] * (1/childParamerter * fatherParameter) / 2;
+            StdDraw.rectangle(i, Math.abs((a[i]/2- v)), 0.25, Math.abs((a[i]/2- v)));
+            // (x, y, halfWidth, halfHeight)
+         }
       }
    }
 
-   private void groupPlotBars(){
+   private void groupPlotBars(double step,double total){
+      double fatherParameter=Math.tanh(2)-Math.tanh(-1);
+      double childParamerter=Math.tanh(step/total*4-1)-Math.tanh(-1);
       for (int j = 0; j < d.objectsCount; j++) {//j组类型数据
          double offset = -0.25 + j * 0.5 / d.objectsCount;
          double[] a = d.data[j].values;
@@ -230,21 +376,23 @@ public class HistogramA {
          if (f.isBarFilled) {
             StdDraw.setPenColor(f.barFillColor);
             for (int i = 0; i < n; i++) {
-               StdDraw.filledRectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+               StdDraw.filledRectangle(i + offset, a[i]/2*childParamerter/fatherParameter, 0.25 / d.objectsCount, a[i]/2*childParamerter/fatherParameter);
                // (x, y, halfWidth, halfHeight)
             }
          }
          if (f.hasBarFrame) {
             StdDraw.setPenColor(f.barFrameColor);
             for (int i = 0; i < n; i++) {
-               StdDraw.rectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+               StdDraw.rectangle(i + offset, a[i]/2*childParamerter/fatherParameter, 0.25 / d.objectsCount, a[i]/2*childParamerter/fatherParameter);
                // (x, y, halfWidth, halfHeight)
             }
          }
       }
    }
 
-   private void stackPlotBars(){
+   private void stackPlotBars(double step,double total){
+      double fatherParameter=Math.tanh(2)-Math.tanh(-1);
+      double childParamerter=Math.tanh(step/total*4-1)-Math.tanh(-1);
       double[] b = d.data[1].values;
       int n = b.length;
       int m = d.objectsCount;
@@ -294,14 +442,14 @@ public class HistogramA {
             setHistogramScale(n);
             if (f.isBarFilled) {
                StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
-               StdDraw.filledRectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
+               StdDraw.filledRectangle(i, bijiao[j-1] / 2*childParamerter/fatherParameter, 0.25, bijiao[j-1] / 2*childParamerter/fatherParameter);
                // (x, y, halfWidth, halfHeight)
 
             }
             if (f.hasBarFrame) {
 
                StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
-               StdDraw.rectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
+               StdDraw.rectangle(i, bijiao[j-1] / 2*childParamerter/fatherParameter, 0.25, bijiao[j-1] / 2*childParamerter/fatherParameter);
                // (x, y, halfWidth, halfHeight)
             }
          }
@@ -382,7 +530,7 @@ public class HistogramA {
       double y = .5 * (yValue[MIN] + yValue[MAX]);
       double halfWidth  = .5 * (xValue[MAX] - xValue[MIN]);
       double halfHeight = .5 * (yValue[MAX] - yValue[MIN]);
-      System.out.println(halfHeight+"+"+halfWidth+"x"+x+"y"+y+" "+yScale[MAX]);
+      //(halfHeight+"+"+halfWidth+"x"+x+"y"+y+" "+yScale[MAX]);
       StdDraw.setPenColor( f.borderColor );
       StdDraw.rectangle( x, y, halfWidth, halfHeight);
    }
@@ -428,7 +576,7 @@ public class HistogramA {
         double ineed=(.5 * (yValue[MIN] + yValue[MAX]))+(.5 * (yValue[MAX] - yValue[MIN]));
         double scaledHeight=(yScale[MAX]-ineed);
         double scaledWidth=scaledHeight/(yScale[1]-yScale[0])*(130.0/62.0)*(xScale[1]-xScale[0]);
-        System.out.println(ineed+" "+scaledHeight+" "+scaledWidth);
+        //(ineed+" "+scaledHeight+" "+scaledWidth);
         scaledHeight*=0.8;
         scaledWidth*=0.8;
         StdDraw.picture((xScale[MAX])-scaledWidth/2,(yScale[MAX])-scaledHeight/2,"LOGO.png",scaledWidth,scaledHeight);

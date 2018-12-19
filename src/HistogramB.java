@@ -101,7 +101,7 @@ public class HistogramB {
             groupPlotBars();
         }
         else if (f.form.equals("static")){
-            plotStaticBars();
+           // plotStaticBars();
         }
     }
     void groupPlotBars(){

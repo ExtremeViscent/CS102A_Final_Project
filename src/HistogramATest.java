@@ -1,18 +1,17 @@
-import java.awt.Color;
+import javazoom.jl.decoder.JavaLayerException;
+import javazoom.jl.player.Player;
+
+import javax.json.Json;
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+
+import java.awt.*;
 import java.io.*;
-import javax.json.*;
 
 public class HistogramATest {
-   public static void main(String[] args) {
+   public static void main(String[] args) throws JavaLayerException {
       HistogramA h = createHistogramAFrom( args[0] );
-      StringBuffer result=new StringBuffer();
-      for (int i = 0; i < h.d.data[0].keys.length; i++) {
-         result.append("\""+h.d.data[0].keys[i]+"\":{\n");
-         result.append("\"keys\":[\"GDP\"],\n");
-         result.append("\"values\":["+h.d.data[0].values[i]+"],\n");
-         result.append("},\n");
-      }
-      System.out.print(result.toString());
       h.draw();
    }   
 
@@ -104,6 +103,8 @@ public class HistogramATest {
       try{fmts.headerColor = getColorFrom( obj.getJsonArray( "headercolor"));}catch(Exception ignored){}
       try{fmts.hasFooter = obj.getBoolean( "hasfooter");}catch(Exception ignored){}
       try{fmts.footerColor = getColorFrom( obj.getJsonArray( "footercolor"));}catch(Exception ignored){}
+      try{fmts.form = obj.getString("form");}catch(Exception ignored){}
+      try{fmts.mode = obj.getString("mode");}catch(Exception ignored){}
       return fmts;
    }
 
@@ -112,25 +113,26 @@ public class HistogramATest {
       data.header = obj.getString( "header", "");
       data.footer = obj.getString( "footer", "");
       try{  data.minValue = obj.getJsonNumber( "minvalue").doubleValue(); }catch(Exception ignored){}
-      if (obj.containsKey("objectsCount")){
-         data.objectsCount = obj.getJsonNumber("objectsCount").intValue();
-         data.data=new SingleObjectData[data.objectsCount];
-         for (int i = 0; i < data.objectsCount; i++) {
-            data.data[i]=new SingleObjectData();
-            data.data[i].name=toStringArray(obj.getJsonArray("name"))[i];
+      if (obj.containsKey("objectsCount")) {
+            data.objectsCount = obj.getJsonNumber("objectsCount").intValue();
+            data.data = new SingleObjectData[data.objectsCount];
+            for (int i = 0; i < data.objectsCount; i++) {
+               data.data[i] = new SingleObjectData();
+               data.data[i].name = toStringArray(obj.getJsonArray("name"))[i];
+            }
+            for (int i = 0; i < data.objectsCount; i++) {
+               JsonObject obj_ = obj.getJsonObject(data.data[i].name);
+               data.data[i].keys = toStringArray(obj_.getJsonArray("keys"));
+               data.data[i].values = toDoubleArray(obj_.getJsonArray("values"));
+            }
          }
-         for (int i=0;i<data.objectsCount;i++) {
-            JsonObject obj_= obj.getJsonObject(data.data[i].name);
-            data.data[i].keys = toStringArray( obj_.getJsonArray( "keys"));
-            data.data[i].values = toDoubleArray( obj_.getJsonArray( "values"));
-         }
-      }
       else {
-         data.objectsCount=1;
-         data.data=new SingleObjectData[1];
-         data.data[0]=new SingleObjectData();
-         data.data[0].keys = toStringArray( obj.getJsonArray( "keys"));
-         data.data[0].values = toDoubleArray( obj.getJsonArray( "values"));}
+            data.objectsCount = 1;
+            data.data = new SingleObjectData[1];
+            data.data[0] = new SingleObjectData();
+            data.data[0].keys = toStringArray(obj.getJsonArray("keys"));
+            data.data[0].values = toDoubleArray(obj.getJsonArray("values"));
+         }
       return data;
    }
 
