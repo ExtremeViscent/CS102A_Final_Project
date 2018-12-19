@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.logging.LogManager;
 
 
-
+@Deprecated
 public class HistogramB {
     Canvas c;
     Formats f;
@@ -98,87 +98,94 @@ public class HistogramB {
 
     private void plotBars() {
         if (f.form.equals("group")) {
-            for (int j = 0; j < d.objectsCount; j++) {//j组类型数据
-                double offset = -0.25 + j * 0.5 / d.objectsCount;
-                double[] a = d.data[j].values;
-                int n = a.length;
-                setHistogramScale(n);
-                if (f.isBarFilled) {
-                    StdDraw.setPenColor(f.barFillColor);
-                    for (int i = 0; i < n; i++) {
-                        StdDraw.filledRectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
-                        // (x, y, halfWidth, halfHeight)
-                    }
+            groupPlotBars();
+        }
+        else if (f.form.equals("static")){
+            plotStaticBars();
+        }
+    }
+    void groupPlotBars(){
+        for (int j = 0; j < d.objectsCount; j++) {//j组类型数据
+            double offset = -0.25 + j * 0.5 / d.objectsCount;
+            double[] a = d.data[j].values;
+            int n = a.length;
+            setHistogramScale(n);
+            if (f.isBarFilled) {
+                StdDraw.setPenColor(f.barFillColor);
+                for (int i = 0; i < n; i++) {
+                    StdDraw.filledRectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+                    // (x, y, halfWidth, halfHeight)
                 }
-                if (f.hasBarFrame) {
-                    StdDraw.setPenColor(f.barFrameColor);
-                    for (int i = 0; i < n; i++) {
-                        StdDraw.rectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
-                        // (x, y, halfWidth, halfHeight)
-                    }
+            }
+            if (f.hasBarFrame) {
+                StdDraw.setPenColor(f.barFrameColor);
+                for (int i = 0; i < n; i++) {
+                    StdDraw.rectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+                    // (x, y, halfWidth, halfHeight)
                 }
             }
         }
-        else {
-            double[] b = d.data[1].values;
-            int n = b.length;
-            int m = d.objectsCount;
-            double[][] a = new double[m][n];
+    }
 
-            for (int j = 0; j < m; j++) {//一个object&给二维数组a赋值
-                double[] temp = d.data[j].values;//进行转移赋值的
-                for (int i = 0; i < n; i++) {
-                    a[j][i] = temp[i];
-                }
-            }//给二维数组a赋值
+    void stackPlotBars(){
+        double[] b = d.data[1].values;
+        int n = b.length;
+        int m = d.objectsCount;
+        double[][] a = new double[m][n];
 
-            int[][] color = new int[m][3];
-            for(int i = 0; i < m; i++){//给每一个object赋颜色!!!!!!!!!!!
-                int a1 = (int)(Math.random()*255);
-                int a2 = (int)(Math.random()*255);
-                int a3 = (int)(Math.random()*255);
-                color[i][0] = a1;
-                color[i][1] = a2;
-                color[i][2] = a3;
+        for (int j = 0; j < m; j++) {//一个object&给二维数组a赋值
+            double[] temp = d.data[j].values;//进行转移赋值的
+            for (int i = 0; i < n; i++) {
+                a[j][i] = temp[i];
             }
+        }//给二维数组a赋值
 
-            for (int i = 0; i < n; i++) {//每行
-                double[] bijiao = new double[m];
-                for (int j = 0; j < m; j++) {//每列的比较
-                    bijiao[j] = a[j][i];
-                }
-                int[] address = new int[m];
-                for(int k = 0;k < m;k++) {
-                    address[k] = k;
-                }
-                for(int j = 0; j<m ;j++ ) {//
-                    for(int l = 0 ; l<m-1 ; l++) {
-                        if(bijiao[l] > bijiao[l+1]) {
-                            double min = bijiao[l+1];
-                            bijiao[l+1] = bijiao[l];
-                            bijiao[l] = min;
+        int[][] color = new int[m][3];
+        for(int i = 0; i < m; i++){//给每一个object赋颜色!!!!!!!!!!!
+            int a1 = (int)(Math.random()*255);
+            int a2 = (int)(Math.random()*255);
+            int a3 = (int)(Math.random()*255);
+            color[i][0] = a1;
+            color[i][1] = a2;
+            color[i][2] = a3;
+        }
 
-                            int f = address[l+1];
-                            address[l+1] = address[l];
-                            address[l] = f;
-                        }
+        for (int i = 0; i < n; i++) {//每行
+            double[] bijiao = new double[m];
+            for (int j = 0; j < m; j++) {//每列的比较
+                bijiao[j] = a[j][i];
+            }
+            int[] address = new int[m];
+            for(int k = 0;k < m;k++) {
+                address[k] = k;
+            }
+            for(int j = 0; j<m ;j++ ) {//
+                for(int l = 0 ; l<m-1 ; l++) {
+                    if(bijiao[l] > bijiao[l+1]) {
+                        double min = bijiao[l+1];
+                        bijiao[l+1] = bijiao[l];
+                        bijiao[l] = min;
+
+                        int f = address[l+1];
+                        address[l+1] = address[l];
+                        address[l] = f;
                     }
                 }
-                for (int j = m; j > 0; j--) {//每列的打印
-                    int index = 0;
-                    setHistogramScale(n);
-                    if (f.isBarFilled) {
-                        StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
-                        StdDraw.filledRectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
-                        // (x, y, halfWidth, halfHeight)
+            }
+            for (int j = m; j > 0; j--) {//每列的打印
+                int index = 0;
+                setHistogramScale(n);
+                if (f.isBarFilled) {
+                    StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
+                    StdDraw.filledRectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
+                    // (x, y, halfWidth, halfHeight)
 
-                    }
-                    if (f.hasBarFrame) {
+                }
+                if (f.hasBarFrame) {
 
-                        StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
-                        StdDraw.rectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
-                        // (x, y, halfWidth, halfHeight)
-                    }
+                    StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
+                    StdDraw.rectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
+                    // (x, y, halfWidth, halfHeight)
                 }
             }
         }

@@ -103,6 +103,7 @@ class HistogramData {
    int objectsCount=1;
    SingleObjectData[] data=new SingleObjectData[0];
 }
+
 class SingleObjectData{
    String name="";
    String[] keys = { };
@@ -168,16 +169,19 @@ public class HistogramA {
    }
 
    public void draw () {
+      StdDraw.enableDoubleBuffering();
       setCanvas();
       plotBars();
       plotRuler();
       plotKeys();
       plotIcon();
       plotShoes();
+      plotFangKuai();
       if (f.hasBorder) plotBorder();
       if (f.hasRightRuler) plotRightRuler();
       if (f.hasHeader) plotHeader();
       if (f.hasFooter) plotFooter();
+      StdDraw.show();
    }
 
    private void setCanvas () {
@@ -198,14 +202,113 @@ public class HistogramA {
       xScale[MAX] = nBars + f.margins[EAST] * xSpacing;
       StdDraw.setXscale( xScale[MIN], xScale[MAX]);
       System.out.println(xScale[0]+" "+xScale[1]);
-   };
+   }
 
    private void setOriginalScale() {
       StdDraw.setXscale( c.xScale[MIN], c.xScale[MAX]);
       StdDraw.setYscale( c.yScale[MIN], c.yScale[MAX]);
    }
 
-   private void plotBars () {
+   private void plotBars() {
+      if (f.form.equals("group")) {
+         groupPlotBars();
+      }
+      else if (f.form.equals("static")){
+         plotStaticBars();
+      }
+      else {
+         stackPlotBars();
+      }
+   }
+
+   private void groupPlotBars(){
+      for (int j = 0; j < d.objectsCount; j++) {//j组类型数据
+         double offset = -0.25 + j * 0.5 / d.objectsCount;
+         double[] a = d.data[j].values;
+         int n = a.length;
+         setHistogramScale(n);
+         if (f.isBarFilled) {
+            StdDraw.setPenColor(f.barFillColor);
+            for (int i = 0; i < n; i++) {
+               StdDraw.filledRectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+               // (x, y, halfWidth, halfHeight)
+            }
+         }
+         if (f.hasBarFrame) {
+            StdDraw.setPenColor(f.barFrameColor);
+            for (int i = 0; i < n; i++) {
+               StdDraw.rectangle(i + offset, a[i] / 2, 0.25 / d.objectsCount, a[i] / 2);
+               // (x, y, halfWidth, halfHeight)
+            }
+         }
+      }
+   }
+
+   private void stackPlotBars(){
+      double[] b = d.data[1].values;
+      int n = b.length;
+      int m = d.objectsCount;
+      double[][] a = new double[m][n];
+
+      for (int j = 0; j < m; j++) {//一个object&给二维数组a赋值
+         double[] temp = d.data[j].values;//进行转移赋值的
+         for (int i = 0; i < n; i++) {
+            a[j][i] = temp[i];
+         }
+      }//给二维数组a赋值
+
+      int[][] color = new int[m][3];
+      for(int i = 0; i < m; i++){//给每一个object赋颜色!!!!!!!!!!!
+         int a1 = (int)(Math.random()*255);
+         int a2 = (int)(Math.random()*255);
+         int a3 = (int)(Math.random()*255);
+         color[i][0] = a1;
+         color[i][1] = a2;
+         color[i][2] = a3;
+      }
+
+      for (int i = 0; i < n; i++) {//每行
+         double[] bijiao = new double[m];
+         for (int j = 0; j < m; j++) {//每列的比较
+            bijiao[j] = a[j][i];
+         }
+         int[] address = new int[m];
+         for(int k = 0;k < m;k++) {
+            address[k] = k;
+         }
+         for(int j = 0; j<m ;j++ ) {//
+            for(int l = 0 ; l<m-1 ; l++) {
+               if(bijiao[l] > bijiao[l+1]) {
+                  double min = bijiao[l+1];
+                  bijiao[l+1] = bijiao[l];
+                  bijiao[l] = min;
+
+                  int f = address[l+1];
+                  address[l+1] = address[l];
+                  address[l] = f;
+               }
+            }
+         }
+         for (int j = m; j > 0; j--) {//每列的打印
+            int index = 0;
+            setHistogramScale(n);
+            if (f.isBarFilled) {
+               StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
+               StdDraw.filledRectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
+               // (x, y, halfWidth, halfHeight)
+
+            }
+            if (f.hasBarFrame) {
+
+               StdDraw.setPenColor(color[address[j-1]][0],color[address[j-1]][1],color[address[j-1]][2]);
+               StdDraw.rectangle(i, bijiao[j-1] / 2, 0.25, bijiao[j-1] / 2);
+               // (x, y, halfWidth, halfHeight)
+            }
+         }
+      }
+   }
+
+   private void plotStaticBars () {
       double[] a = d.data[0].values;
       int n = a.length;
       setHistogramScale( n );
@@ -261,18 +364,18 @@ public class HistogramA {
       return n;
    }
 
-   private void plotKeys() {
-      Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
-      StdDraw.setFont( font );
-      StdDraw.setPenColor( f.keyColor );
-      final double y = yValue[MIN] - (yValue[MIN]-yScale[MIN])*0.2;
-      for (int i = 0; i < d.data[0].keys.length; i++) {
-         if (d.data[0].keys[i].length() >= 1) {
-            double x = xValue[MIN] + 1 + i;
-            StdDraw.text( x, y, d.data[0].keys[i]);
-         }
-      }
-   }
+    private void plotKeys() {
+        Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
+        StdDraw.setFont( font );
+        StdDraw.setPenColor( f.keyColor );
+        final double y = yValue[MIN] - (yValue[MIN]-yScale[MIN])*0.2;
+        for (int i = 0; i < d.data[0].keys.length; i++) {
+            if (d.data[0].keys[i].length() >= 1) {
+                double x = xValue[MIN] + 1 + i;
+                StdDraw.text( x, y, d.data[0].keys[i]);
+            }
+        }
+    }
 
    private void plotBorder() {
       double x = .5 * (xValue[MIN] + xValue[MAX]);
@@ -312,41 +415,55 @@ public class HistogramA {
       StdDraw.text( x, y, d.header );
    }
 
+    private void plotFooter() {
+        Font font = new Font( "consolas", Font.BOLD, 16 ); // TO BE Customized
+        StdDraw.setFont( font );
+        double x = .5 * (xScale[MIN] + xScale[MAX]);
+        double y = (yValue[MIN]-(yValue[MIN]-yScale[MIN])/3*2.15);
+        StdDraw.setPenColor( f.footerColor );
+        StdDraw.text( x, y, d.footer );
+    }
 
-   private void plotFooter() {
-      Font font = new Font( "consolas", Font.BOLD, 16 ); // TO BE Customized
-      StdDraw.setFont( font );
-      double x = .5 * (xScale[MIN] + xScale[MAX]);
-      double y = (yValue[MIN]-(yValue[MIN]-yScale[MIN])/2);
-      StdDraw.setPenColor( f.footerColor );
-      StdDraw.text( x, y, d.footer );
-   }
+    private void plotIcon(){
+        double ineed=(.5 * (yValue[MIN] + yValue[MAX]))+(.5 * (yValue[MAX] - yValue[MIN]));
+        double scaledHeight=(yScale[MAX]-ineed);
+        double scaledWidth=scaledHeight/(yScale[1]-yScale[0])*(130.0/62.0)*(xScale[1]-xScale[0]);
+        System.out.println(ineed+" "+scaledHeight+" "+scaledWidth);
+        scaledHeight*=0.8;
+        scaledWidth*=0.8;
+        StdDraw.picture((xScale[MAX])-scaledWidth/2,(yScale[MAX])-scaledHeight/2,"LOGO.png",scaledWidth,scaledHeight);
+    }
 
-   private void plotIcon(){
-      double ineed=(.5 * (yValue[MIN] + yValue[MAX]))+(.5 * (yValue[MAX] - yValue[MIN]));
-      double scaledHeight=(yScale[MAX]-ineed);
-      double scaledWidth=scaledHeight/(yScale[1]-yScale[0])*(130.0/62.0)*(xScale[1]-xScale[0]);
-      System.out.println(ineed+" "+scaledHeight+" "+scaledWidth);
-      scaledHeight*=0.8;
-      scaledWidth*=0.8;
-      StdDraw.picture((xScale[MAX])-scaledWidth/2,(yScale[MAX])-scaledHeight/2,"LOGO.png",scaledWidth,scaledHeight);
-   }
+    private void plotShoes(){
+        double xlength = xScale[MAX] - xScale[MIN];
+        double ylength = yScale[MAX] - yScale[MIN];
+        double x0 = (xScale[MAX] + xScale[MIN])/2;
+        double y0 = (yScale[MAX] + yScale[MIN])/2;
+        double changdu1 = (xlength)/4;
+        double changdu2 = 3*changdu1;
+        double kuandu = 0.2*(yValue[MIN]-yScale[MIN]);
+        double a1 = changdu1/2-xlength/2;
+        double a2 = xlength/2-changdu2/2;
+        double b = kuandu/2-ylength/2;
+        StdDraw.setPenColor(43,183,179);
+        StdDraw.filledRectangle(x0+a1, y0+kuandu/2-ylength/2, changdu1/2 , 0.1*(yValue[MIN]-yScale[MIN]));
+        StdDraw.setPenColor(237,108,0);
+        StdDraw.filledRectangle(x0+a2, y0+kuandu/2-ylength/2, changdu2/2 , 0.1*(yValue[MIN]-yScale[MIN]));
+    }
 
-   private void plotShoes(){
+   private void plotFangKuai(){
       double xlength = xScale[MAX] - xScale[MIN];
       double ylength = yScale[MAX] - yScale[MIN];
       double x0 = (xScale[MAX] + xScale[MIN])/2;
       double y0 = (yScale[MAX] + yScale[MIN])/2;
-      double changdu1 = (xlength)/4;
-      double changdu2 = 3*changdu1;
-      double kuandu = 0.25*(yValue[MIN]-yScale[MIN]);
-      double a1 = changdu1/2-xlength/2;
-      double a2 = xlength/2-changdu2/2;
-      double b = kuandu/2-ylength/2;
-      StdDraw.setPenColor(43,183,179);
-      StdDraw.filledRectangle(x0+a1, y0+kuandu/2-ylength/2, changdu1/2 , 0.125*(yValue[MIN]-yScale[MIN]));
-      StdDraw.setPenColor(237,108,0);
-      StdDraw.filledRectangle(x0+a2, y0+kuandu/2-ylength/2, changdu2/2 , 0.125*(yValue[MIN]-yScale[MIN]));
+      double yjianju = yValue[MIN]-yScale[MIN];
+      double xjianju = xlength*yjianju/ylength;
+      double ychangdu = yjianju*0.1;
+      double xchangdu = xjianju*0.045;
+      StdDraw.setPenColor(0,0,255);
+      StdDraw.filledRectangle(x0,yValue[MIN]-(yValue[MIN]-yScale[MIN]),xchangdu/2,ychangdu/2);
+      StdDraw.setPenColor(0,0,255);
+      StdDraw.filledRectangle(x0,y0,xchangdu/2,ychangdu/2);
    }
 
 
