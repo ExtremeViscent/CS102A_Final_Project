@@ -62,7 +62,7 @@ public class HistogramC {
     class ShinTakaraJima implements Runnable{
         @Override
         public void run() {
-            File file=new File("C:\\Users\\zhang\\IdeaProjects\\CS102A_Final_Project\\Resources\\E.mp3");
+            File file=new File("/Users/david/IdeaProjects/CS102A_Final_Project/Resources/E.mp3");
             FileInputStream fis= null;
             try {
                 fis = new FileInputStream(file);

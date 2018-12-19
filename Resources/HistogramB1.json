@@ -9,7 +9,7 @@
    },
    
    "formats" : {
-      "margins" : [0.15, 0.25, 0.1, 0.05],
+      "margins" : [0.15, 0.2, 0.1, 0.05],
       "isbarfilled" : true,
       "barfillcolor" : [0, 0, 255],
       "hasbarframe" : true,

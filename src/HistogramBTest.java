@@ -89,6 +89,7 @@ public class HistogramBTest {
    private static Formats getFormatsFrom( JsonObject obj) {
       Formats fmts = new Formats();
       try{fmts.isBarFilled = obj.getBoolean( "isbarfilled");}catch(Exception ignored){}
+      try{fmts.margins = toDoubleArray(obj.getJsonArray( "margins"));}catch(Exception ignored){}
       try{fmts.barFillColor = getColorFrom( obj.getJsonArray( "barfillcolor"));}catch(Exception ignored){}
       try{fmts.hasBarFrame = obj.getBoolean( "hasbarframe");}catch(Exception ignored){}
       try{fmts.barFrameColor = getColorFrom( obj.getJsonArray( "barframecolor"));}catch(Exception ignored){}
