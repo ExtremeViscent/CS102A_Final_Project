@@ -188,7 +188,7 @@ public class HistogramB {
     }
 
     private void plotRuler() {
-        Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
+        Font font = new Font( "arial", Font.PLAIN, 12 ); // TO BE Customized
         StdDraw.setFont( font );
         StdDraw.setPenColor( f.rulerColor );
         final double x0 = xValue[MIN] - 0.05, x1 = xValue[MIN] + 0.05;
@@ -224,7 +224,7 @@ public class HistogramB {
     }
 
     private void plotKeys() {
-        Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
+        Font font = new Font( "arial", Font.PLAIN, 12 ); // TO BE Customized
         StdDraw.setFont( font );
         StdDraw.setPenColor( f.keyColor );
         final double y = yValue[MIN] - (yValue[MIN]-yScale[MIN])*0.2;
@@ -249,7 +249,7 @@ public class HistogramB {
     }
 
     private void plotRightRuler() {
-        Font font = new Font( "consolas", Font.PLAIN, 12 ); // TO BE Customized
+        Font font = new Font( "arial", Font.PLAIN, 12 ); // TO BE Customized
         StdDraw.setFont( font );
         StdDraw.setPenColor( f.rulerColor );
         final double x0 = xValue[MAX] - 0.05, x1 = xValue[MAX] + 0.05;
