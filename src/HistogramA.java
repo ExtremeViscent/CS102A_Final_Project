@@ -210,12 +210,21 @@ public class HistogramA {
    class ShinTakaraJima implements Runnable{
       @Override
       public void run() {
-         File file=new File("C:\\Users\\zhang\\IdeaProjects\\CS102A_Final_Project\\Resources\\E.mp3");
+         File file= null;
+         try {
+            file = new File("C:\\Users\\zhang\\IdeaProjects\\CS102A_Final_Project\\Resources\\E.mp3");
+         } catch (Exception e) {
+         }
          FileInputStream fis= null;
          try {
             fis = new FileInputStream(file);
          } catch (FileNotFoundException e) {
-            e.printStackTrace();
+            file = new File("/Users/david/IdeaProjects/CS102A_Final_Project/Resources/E.mp3");
+            try {
+               fis = new FileInputStream(file);
+            } catch (FileNotFoundException e1) {
+               e1.printStackTrace();
+            }
          }
          BufferedInputStream stream=new BufferedInputStream(fis);
          Player player= null;
@@ -327,19 +336,20 @@ public class HistogramA {
                for (int j = 0; j < 30; j++) {
                   StdDraw.clear(c.bgColor);
                   StdDraw.setPenColor(c.color);
+                  setHistogramScale(x[0].length);
                   for (int k = 0; k < realTime[0].values.length; k++) {
-                     setHistogramScale(x[0].length);
-                     StdDraw.setPenColor(bindedColor[indices[i][k][j]]);
+                     StdDraw.setPenColor(bindedColor[(int)x[i][k][j]]);
+                     StdDraw.setFont( new Font( "arial", Font.PLAIN, 5 ));
                      StdDraw.filledRectangle(indices[i][k][j], y[i][k][j],0.25,y[i][k][j]);
-                     plotRuler();
-                     plotKeys(i,k,j);
-                     plotIcon();
-                     plotShoes();
-                     if (f.hasBorder) plotBorder();
-                     if (f.hasRightRuler) plotRightRuler();
-                     if (f.hasHeader) plotHeader();
-                     if (f.hasFooter) plotFooter();
+                     StdDraw.text( indices[i][k][j], yValue[MIN] - (yValue[MIN]-yScale[MIN])*0.2, realTime[0].keys[k]);
                   }
+                  plotRuler();
+                  plotIcon();
+                  plotShoes();
+                  if (f.hasBorder) plotBorder();
+                  if (f.hasRightRuler) plotRightRuler();
+                  if (f.hasHeader) plotHeader();
+                  if (f.hasFooter) plotFooter();
                   StdDraw.show();
                }
             }
